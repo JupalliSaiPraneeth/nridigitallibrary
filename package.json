@@ -1,0 +1,12 @@
+{
+  "name": "nri-digital-library",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npx serve . -p 3000",
+    "start": "npx serve . -p 3000",
+    "server": "python serve.py"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}

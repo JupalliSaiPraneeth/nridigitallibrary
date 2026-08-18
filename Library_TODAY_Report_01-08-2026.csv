@@ -1,0 +1,6 @@
+ID,Student Name,Roll Number,Department,Entry Time,Exit Time,Duration,Status,Date
+1785561580233,"Karthik Verma","23071A0412","ECE","10:49:40 AM","--","In Progress","Inside","01-08-2026"
+1785561048010,"J. SAI PRANEETH","23KN1A05A1","CSE","10:40:47 AM","--","In Progress","Inside","01-08-2026"
+101,"Ananya Sharma","23071A05B2","CSE","09:15:10","--","In Progress","Inside","01-08-2026"
+102,"Sneha Reddy","23071A1208","IT","09:45:00","--","In Progress","Inside","01-08-2026"
+103,"Sai Praneeth","23071A05A1","CSE","08:30:00","10:00:00","1h 30m","Outside","01-08-2026"
