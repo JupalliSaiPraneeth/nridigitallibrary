@@ -8351,7 +8351,7 @@
       const authorName = book.author || (Array.isArray(book.authors) && book.authors.length ? book.authors.join(", ") : "Academic Scholars");
       const authorsList = Array.isArray(book.authors) && book.authors.length ? book.authors : [authorName];
 
-      const apiBase = (typeof API_URL !== 'undefined' && API_URL) ? API_URL : 'http://192.168.56.1:5001';
+      const apiBase = (typeof getActiveLibraryApiUrl === 'function') ? getActiveLibraryApiUrl() : (typeof window !== 'undefined' && window.location.origin ? window.location.origin : '');
       let fileUrl = book.url || book.file || book.pdf_path || book.pdfUrl || "";
       if (fileUrl && fileUrl.startsWith("/") && !fileUrl.startsWith("//")) {
         fileUrl = `${apiBase}${fileUrl}`;
@@ -8402,8 +8402,24 @@
       };
     }
 
-    // Helper to get active laptop server address (auto-purging obsolete port 8000)
+    // Helper to get active digital library server address (auto-detects deployed vs local)
     function getActiveLibraryApiUrl() {
+      // 1. If running on a deployed web domain (HTTPS or public host like onrender.com, vercel.app),
+      // always prioritize the deployed origin to prevent Mixed Content security blocking
+      if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
+        const hostname = window.location.hostname;
+        const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
+        const isPrivateIp = hostname.startsWith('192.168.') || hostname.startsWith('10.') || hostname.startsWith('172.');
+        
+        if (isLocalHost || isPrivateIp) {
+          if (window.location.port === '5001') {
+            return window.location.origin;
+          }
+        } else {
+          return window.location.origin;
+        }
+      }
+
       try {
         const stored = localStorage.getItem('VITE_LIBRARY_API_URL');
         if (stored) {
@@ -8420,7 +8436,7 @@
           return window.VITE_LIBRARY_API_URL.replace(/\/+$/, '');
         }
       }
-      return 'http://192.168.56.1:5001';
+      return 'http://127.0.0.1:5001';
     }
 
     window.switchLibraryServer = function(newUrl) {
@@ -8431,7 +8447,7 @@
       loadBooks();
     };
 
-    // College / Laptop Server API Service caller
+    // Digital Library Server API Service caller
     async function getBooks(timeoutMs = 6000) {
       if (typeof window.LibraryApi !== 'undefined' && typeof window.LibraryApi.getBooks === 'function') {
         return await window.LibraryApi.getBooks(timeoutMs);
@@ -8449,17 +8465,24 @@
         const data = await response.json();
         return Array.isArray(data) ? data.map(mapBookToFrontendModel) : data;
       } catch (err) {
-        // Automatic fallback between 192.168.56.1 and 127.0.0.1 for local laptop testing
-        const fallbackUrl = resolvedApiUrl.includes('192.168.56.1') 
-          ? 'http://127.0.0.1:5001/api/books' 
-          : 'http://192.168.56.1:5001/api/books';
-        try {
-          const fallbackRes = await fetch(fallbackUrl, { signal: controller.signal });
-          if (fallbackRes.ok) {
-            const data = await fallbackRes.json();
-            return Array.isArray(data) ? data.map(mapBookToFrontendModel) : data;
+        // Automatic fallback for local testing
+        if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
+          const fallbackCandidates = [
+            'http://127.0.0.1:5001/api/books',
+            'http://192.168.0.4:5001/api/books',
+            'http://192.168.56.1:5001/api/books'
+          ];
+          for (const fallbackUrl of fallbackCandidates) {
+            if (fallbackUrl.includes(resolvedApiUrl)) continue;
+            try {
+              const fallbackRes = await fetch(fallbackUrl, { signal: controller.signal });
+              if (fallbackRes.ok) {
+                const data = await fallbackRes.json();
+                return Array.isArray(data) ? data.map(mapBookToFrontendModel) : data;
+              }
+            } catch (e) {}
           }
-        } catch (e) {}
+        }
         throw err;
       } finally {
         clearTimeout(timer);
@@ -8491,13 +8514,14 @@
         console.warn("Library Server Connection Notice:", error.message || error);
         booksData = [];
         if (booksGrid) {
+          const originServer = (typeof window !== 'undefined' && window.location.origin) ? window.location.origin : 'http://127.0.0.1:5001';
           booksGrid.innerHTML = `
             <div class="library-error-state" style="grid-column: 1 / -1; text-align: center; padding: 70px 20px;">
               <svg class="icon" viewBox="0 0 24 24" style="font-size: 48px; color: var(--accent-orange, #ed6b10); margin-bottom: 16px; width: 48px; height: 48px; display: inline-block;">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/>
               </svg>
               <h3 style="color: var(--text-main); font-family: var(--font-heading); font-size: 1.35rem; margin-bottom: 8px;">Unable to connect to the library server.</h3>
-              <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">Please ensure your Node.js laptop server is running.</p>
+              <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">Please ensure your digital library server or local book server is running.</p>
               <div style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 20px;">Target: <code>${currentServerUrl}</code></div>
               <div style="display: inline-flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
                 <button onclick="loadBooks()" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--accent-orange, #ed6b10); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
@@ -8507,11 +8531,14 @@
                   </svg>
                   Retry Connection
                 </button>
-                <button onclick="switchLibraryServer('http://192.168.56.1:5001')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: transparent; border: 1px solid var(--border-color, #cbd5e1); color: var(--text-main); border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer;">
-                  192.168.56.1:5001
+                <button onclick="switchLibraryServer('${originServer}')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: transparent; border: 1px solid var(--border-color, #cbd5e1); color: var(--text-main); border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer;">
+                  Default Server
                 </button>
                 <button onclick="switchLibraryServer('http://127.0.0.1:5001')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: transparent; border: 1px solid var(--border-color, #cbd5e1); color: var(--text-main); border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer;">
-                  127.0.0.1:5001
+                  Local Laptop (5001)
+                </button>
+                <button onclick="switchLibraryServer('http://192.168.0.4:5001')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: transparent; border: 1px solid var(--border-color, #cbd5e1); color: var(--text-main); border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer;">
+                  Wi-Fi (192.168.0.4)
                 </button>
               </div>
             </div>
@@ -9476,7 +9503,7 @@
       if (typeof getActiveLibraryApiUrl === 'function') {
         return getActiveLibraryApiUrl();
       }
-      return 'http://192.168.56.1:5001';
+      return typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'http://127.0.0.1:5001';
     }
 
     function normalizeMediaUrl(url) {
@@ -11066,7 +11093,7 @@ endmodule
     // ==========================================
     // AI-POWERED PDF INGESTION & DIGITAL LIBRARY BACKEND API
     // ==========================================
-    const API_URL = typeof getActiveLibraryApiUrl === 'function' ? getActiveLibraryApiUrl() : 'http://192.168.56.1:5001';
+    const API_URL = typeof getActiveLibraryApiUrl === 'function' ? getActiveLibraryApiUrl() : (typeof window !== 'undefined' && window.location.origin ? window.location.origin : 'http://127.0.0.1:5001');
     const API_BASE_URL = `${API_URL}/api`;
     let currentIngestJobId = null;
     let ingestPollingInterval = null;

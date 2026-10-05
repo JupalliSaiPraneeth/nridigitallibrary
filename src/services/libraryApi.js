@@ -1,10 +1,18 @@
 /**
  * Local Laptop Digital Library API Service
- * Fetches book catalog data from the local Express server.
+ * Fetches book catalog data from the local Express server or deployed host.
  */
 
 // Environment Variable: Configurable via Vite or window override
 const resolveApiUrl = () => {
+  // If running on a deployed web domain (like onrender.com or vercel.app), use the deployed origin
+  if (typeof window !== "undefined" && window.location.protocol.startsWith("http")) {
+    const hostname = window.location.hostname;
+    if (hostname !== "localhost" && hostname !== "127.0.0.1" && hostname !== "192.168.56.1") {
+      return window.location.origin;
+    }
+  }
+
   try {
     if (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_LIBRARY_API_URL) {
       const envVal = import.meta.env.VITE_LIBRARY_API_URL;
@@ -42,13 +50,12 @@ export const API_URL = resolveApiUrl();
 
 /**
  * Maps fields from server response to the existing frontend book model.
- * Handles the local laptop server format:
- * { id, title, fileName, fileType, url }
+ * Handles both the local laptop server format and the deployed server format.
  */
 export function mapBookToFrontendModel(book) {
   if (!book) return null;
 
-  // Department mapping based on title keywords
+  // Department mapping based on title/category keywords
   const deptMap = {
     "computer science": "CSE",
     "information technology": "CSE",
@@ -91,7 +98,7 @@ export function mapBookToFrontendModel(book) {
   const authorName = book.author || (Array.isArray(book.authors) && book.authors.length ? book.authors.join(", ") : "Academic Scholars");
   const authorsList = Array.isArray(book.authors) && book.authors.length ? book.authors : [authorName];
 
-  // Direct server URL (e.g. http://192.168.56.1:5001/books/Python.pdf)
+  // Direct server URL (e.g. http://192.168.56.1:5001/books/Python.pdf or /storage/pdfs/...)
   let fileUrl = book.url || book.file || book.pdf_path || book.pdfUrl || "";
   if (fileUrl && fileUrl.startsWith("/") && !fileUrl.startsWith("//")) {
     fileUrl = `${API_URL}${fileUrl}`;
@@ -103,7 +110,7 @@ export function mapBookToFrontendModel(book) {
   }
 
   const pageCount = book.total_pages || book.pagesCount || 100;
-  const description = book.description || book.desc || book.short_description || `Authentic academic volume on ${book.title || "course curriculum"} hosted on local digital library server.`;
+  const description = book.description || book.desc || book.short_description || `Authentic academic volume on ${book.title || "course curriculum"} hosted on digital library server.`;
   const shortDesc = book.short_description || book.desc || description;
 
   return {
@@ -135,15 +142,15 @@ export function mapBookToFrontendModel(book) {
     chapters: Array.isArray(book.chapters) ? book.chapters : [],
     features: Array.isArray(book.features) && book.features.length ? book.features : [
       `Core curriculum principles and laboratory exercises in ${resolvedDept}`,
-      `Authentic local library volume: ${book.title || "Curriculum Resource"}`,
-      "Streamed directly from local laptop book server",
+      `Authentic library volume: ${book.title || "Curriculum Resource"}`,
+      "Streamed directly from digital library book server",
       "Interactive reader integration with high-resolution document viewing"
     ]
   };
 }
 
 /**
- * Fetch books from the Local Laptop Server REST API.
+ * Fetch books from the Server REST API.
  */
 export async function getBooks(timeoutMs = 6000) {
   const controller = new AbortController();
