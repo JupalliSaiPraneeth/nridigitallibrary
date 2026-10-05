@@ -53,7 +53,9 @@
   <style>
     /* Theme Tokens (DEFAULT LIGHT: Pure White & Vibrant #ed6b10 Orange) */
     @keyframes libSpin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     :root {
@@ -1002,7 +1004,7 @@
     /* Hero Section */
     .hero {
       position: relative;
-      padding: 75px 0 95px 0;
+      padding: 28px 0 14px 0;
       overflow: hidden;
     }
 
@@ -1181,7 +1183,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 32px;
+      margin-bottom: 0;
       flex-wrap: wrap;
     }
 
@@ -1206,30 +1208,12 @@
 
     /* Hero Stats Bar */
     .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border-light);
-      width: 100%;
-    }
-
-    .stat-item h3 {
-      font-family: var(--font-heading);
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--accent-orange-bright);
-    }
-
-    .stat-item p {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      font-weight: 500;
+      display: none;
     }
 
     /* Section Styling */
     .section {
-      padding: 80px 0;
+      padding: 24px 0;
       position: relative;
     }
 
@@ -1237,9 +1221,9 @@
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      margin-bottom: 36px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 14px;
     }
 
     .section-subtitle {
@@ -1248,7 +1232,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1.2px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -1256,7 +1240,7 @@
 
     .section-title {
       font-family: var(--font-heading);
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 700;
       letter-spacing: -0.5px;
       color: var(--text-main);
@@ -1265,10 +1249,10 @@
     /* Department Categories Filter */
     .filter-tabs {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       overflow-x: auto;
-      padding-bottom: 12px;
-      margin-bottom: 36px;
+      padding-bottom: 8px;
+      margin-bottom: 18px;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
@@ -3317,7 +3301,7 @@
       }
     }
 
-            /* Complete Mobile Responsiveness & Centering System */
+    /* Complete Mobile Responsiveness & Centering System */
     @media (max-width: 768px) {
       .modal-overlay {
         padding: 0 !important;
@@ -5338,15 +5322,15 @@
     .footer {
       background: var(--bg-secondary);
       border-top: 1px solid var(--border-light);
-      padding: 70px 0 30px 0;
+      padding: 36px 0 20px 0;
       position: relative;
     }
 
     .footer-grid {
       display: grid;
       grid-template-columns: 1.5fr repeat(3, 1fr);
-      gap: 40px;
-      margin-bottom: 50px;
+      gap: 28px;
+      margin-bottom: 24px;
     }
 
     .footer-brand p {
@@ -6222,7 +6206,7 @@
       }
 
       .hero {
-        padding: 28px 0 40px 0;
+        padding: 16px 0 10px 0;
         width: 100%;
         overflow: hidden;
       }
@@ -6349,7 +6333,7 @@
       }
 
       .section {
-        padding: 40px 0;
+        padding: 18px 0;
       }
 
       .section-title {
@@ -6531,7 +6515,7 @@
       }
 
       .footer {
-        padding: 40px 0 20px 0;
+        padding: 24px 0 16px 0;
       }
 
       .footer-grid {
@@ -6624,7 +6608,7 @@
         display: flex !important;
       }
 
-            .modal-overlay {
+      .modal-overlay {
         padding: 0 !important;
         inset: 0 !important;
         position: fixed !important;
@@ -6833,9 +6817,7 @@
       <!-- Desktop Navbar Links -->
       <ul class="nav-links">
         <li><a href="#hero" class="nav-link active">Home</a></li>
-        <li><a href="#catalog" class="nav-link">E-Books Reader</a></li>
-        <li><a href="#journals" class="nav-link">Research Databases</a></li>
-        <li><a href="#ai-assistant" class="nav-link">LibAI Assistant</a></li>
+        <li><a href="#catalog" class="nav-link">E-Books Catalog</a></li>
         <li><a href="#footer" class="nav-link">Help & Contact</a></li>
       </ul>
 
@@ -6927,24 +6909,7 @@
           <span>E-Books Catalog</span>
         </a>
       </li>
-      <li>
-        <a href="#journals" class="dropdown-item">
-          <svg class="icon" viewBox="0 0 24 24" style="color: var(--accent-orange); font-size: 18px;">
-            <path
-              d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-          </svg>
-          <span>Research Databases</span>
-        </a>
-      </li>
-      <li>
-        <a href="#ai-assistant" class="dropdown-item">
-          <svg class="icon" viewBox="0 0 24 24" style="color: var(--accent-orange); font-size: 18px;">
-            <path
-              d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12z" />
-          </svg>
-          <span>LibAI Assistant</span>
-        </a>
-      </li>
+
       <li>
         <a href="#" class="dropdown-item" id="mobileShelfBtn">
           <svg class="icon" viewBox="0 0 24 24" style="color: var(--accent-orange); font-size: 18px;">
@@ -6982,21 +6947,7 @@
 
     <div class="container hero-grid">
 
-      <div class="hero-content">
-        <div class="hero-badge">
-          <span class="live-dot"></span>
-          Central Digital Knowledge Portal • Official E-Book Catalog
-        </div>
-
-        <h1 class="hero-title">
-          Gateway to Unlimited <span class="highlight">Academic E-Books</span> & Research
-        </h1>
-
-        <p class="hero-subtitle">
-          Read, search, listen to, and cite 150,000+ interactive engineering textbooks, peer-reviewed journals, and lab
-          manuals directly in your browser. Designed for students and faculty of RVR NRI.
-        </p>
-
+      <div class="hero-content" style="width: 100%;">
         <!-- Search Box & Filter Bar -->
         <div class="search-box-wrap">
           <div class="search-input-group">
@@ -7029,26 +6980,6 @@
           <span class="type-chip" data-type="reference">Reference Manuals</span>
           <span class="type-chip" data-type="research">Research Publications</span>
           <span class="type-chip" data-type="lab">Lab Guides</span>
-        </div>
-
-        <!-- Live Digital Stats -->
-        <div class="hero-stats">
-          <div class="stat-item">
-            <h3 class="counter" data-target="150000">0</h3>
-            <p>E-Books & Papers</p>
-          </div>
-          <div class="stat-item">
-            <h3 class="counter" data-target="12500">0</h3>
-            <p>Peer-Reviewed Journals</p>
-          </div>
-          <div class="stat-item">
-            <h3 class="counter" data-target="45000">0</h3>
-            <p>Active Readers</p>
-          </div>
-          <div class="stat-item">
-            <h3 style="color: var(--accent-orange-bright);">24/7</h3>
-            <p>Instant Browser Reader</p>
-          </div>
         </div>
       </div>
 
@@ -7106,113 +7037,6 @@
     </div>
   </section>
 
-  <!-- Research Databases Direct Access -->
-  <section class="section journals-section" id="journals">
-    <div class="container">
-
-      <div class="section-header">
-        <div>
-          <div class="section-subtitle">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path
-                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-            </svg>
-            INSTITUTIONAL ACCESS PORTAL
-          </div>
-          <h2 class="section-title">International Research Databases</h2>
-        </div>
-      </div>
-
-      <div class="journals-grid">
-
-        <div class="journal-card" onclick="openExternalPortal('IEEE Xplore Digital Library')">
-          <div class="journal-icon-box">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
-            </svg>
-          </div>
-          <h3 class="journal-name">IEEE Xplore</h3>
-          <p class="journal-desc">Electrical, CSE & Telecommunications journals & standards.</p>
-        </div>
-
-        <div class="journal-card" onclick="openExternalPortal('ScienceDirect (Elsevier)')">
-          <div class="journal-icon-box">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path
-                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
-            </svg>
-          </div>
-          <h3 class="journal-name">ScienceDirect</h3>
-          <p class="journal-desc">Full-text scientific, technical, and medical research papers.</p>
-        </div>
-
-        <div class="journal-card" onclick="openExternalPortal('Springer Link')">
-          <div class="journal-icon-box">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" />
-            </svg>
-          </div>
-          <h3 class="journal-name">Springer Link</h3>
-          <p class="journal-desc">Peer-reviewed books, protocols, and reference works.</p>
-        </div>
-
-        <div class="journal-card" onclick="openExternalPortal('JSTOR Academic Library')">
-          <div class="journal-icon-box">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2z" />
-            </svg>
-          </div>
-          <h3 class="journal-name">JSTOR Archives</h3>
-          <p class="journal-desc">Digital archive of primary sources, humanities, and sciences.</p>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- LibAI Research Assistant Banner -->
-  <section class="section" id="ai-assistant">
-    <div class="container">
-      <div class="ai-assistant-banner">
-        <div class="ai-banner-content">
-          <div class="ai-badge">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path
-                d="M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12z" />
-            </svg>
-            SMART LIB-AI RESEARCH ASSISTANT
-          </div>
-          <h2 class="ai-banner-title">Need help finding textbooks or research topics?</h2>
-          <p class="ai-banner-desc">Ask LibAI to summarize chapters, synthesize GATE syllabus reference topics, or
-            recommend core textbooks!</p>
-
-          <div class="ai-query-box">
-            <input type="text" id="aiQueryInput" class="ai-query-input"
-              placeholder="Ask LibAI: e.g., Recommend top books for Gate CSE 2026, VLSI timing analysis, or Deep Learning...">
-            <button class="btn-primary" id="aiQueryBtn">Ask LibAI</button>
-          </div>
-
-          <div class="ai-prompt-chips">
-            <span class="prompt-chip" onclick="setAiPrompt('Recommend core textbooks for GATE CSE 2026')">GATE CSE 2026
-              List</span>
-            <span class="prompt-chip" onclick="setAiPrompt('Summarize key concepts in Deep Learning Chapter 1')">Deep
-              Learning Summary</span>
-            <span class="prompt-chip" onclick="setAiPrompt('Best E-Books for VLSI System & CMOS Inverter design')">VLSI
-              & CMOS Books</span>
-            <span class="prompt-chip" onclick="setAiPrompt('Which books cover Smart Microgrids & Solar energy?')">Smart
-              Microgrids</span>
-          </div>
-
-          <div id="aiResponseBox"
-            style="margin-top: 16px; font-size: 0.9rem; color: #e2e8f0; display: none; background: rgba(0,0,0,0.5); padding: 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); line-height: 1.6;">
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- Footer -->
   <footer class="footer" id="footer">
     <div class="container">
@@ -7236,7 +7060,7 @@
             <li><a href="#catalog">Engineering Textbooks</a></li>
             <li><a href="#catalog">Pharmacy Journals</a></li>
             <li><a href="#catalog">Management Case Studies</a></li>
-            <li><a href="#journals">Scopus Indexed Journals</a></li>
+            <li><a href="#catalog">Scopus Indexed Journals</a></li>
             <li><a href="#catalog">Faculty Publications</a></li>
           </ul>
         </div>
@@ -7441,8 +7265,7 @@
           </div>
           <div class="reader-pdf-view" id="readerPdfView"
             style="width: 100%; height: 100%; min-height: 0; flex: 1; display: flex; flex-direction: column; background: #1e293b; border-radius: 0; margin: 0; padding: 0;">
-            <iframe id="readerPdfFrame" title="PDF Document Viewer" frameborder="0"
-              src="about:blank"
+            <iframe id="readerPdfFrame" title="PDF Document Viewer" frameborder="0" src="about:blank"
               style="width: 100%; height: 100%; min-height: 0; flex: 1; border: none; border-radius: 0; display: block; margin: 0; padding: 0; background: #1e293b;"></iframe>
           </div>
         </div>
@@ -8404,8 +8227,6 @@
 
     // Helper to get active digital library server address (auto-detects deployed vs local)
     function getActiveLibraryApiUrl() {
-      // 1. If running on a deployed web domain (HTTPS or public host like onrender.com, vercel.app),
-      // always prioritize the deployed origin to prevent Mixed Content security blocking
       if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
         const hostname = window.location.hostname;
         const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
@@ -8429,7 +8250,7 @@
             return stored.replace(/\/+$/, '');
           }
         }
-      } catch (e) {}
+      } catch (e) { }
 
       if (typeof window !== 'undefined') {
         if (window.VITE_LIBRARY_API_URL && !window.VITE_LIBRARY_API_URL.includes('8000')) {
@@ -8439,7 +8260,7 @@
       return 'http://127.0.0.1:5001';
     }
 
-    window.switchLibraryServer = function(newUrl) {
+    window.switchLibraryServer = function (newUrl) {
       if (newUrl) {
         localStorage.setItem('VITE_LIBRARY_API_URL', newUrl);
         window.VITE_LIBRARY_API_URL = newUrl;
@@ -8453,7 +8274,7 @@
         return await window.LibraryApi.getBooks(timeoutMs);
       }
       const resolvedApiUrl = getActiveLibraryApiUrl();
-      
+
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -8480,7 +8301,7 @@
                 const data = await fallbackRes.json();
                 return Array.isArray(data) ? data.map(mapBookToFrontendModel) : data;
               }
-            } catch (e) {}
+            } catch (e) { }
           }
         }
         throw err;
@@ -10936,73 +10757,63 @@ endmodule
     }
 
     function setAiPrompt(text) {
-      aiQueryInput.value = text;
-      aiQueryBtn.click();
+      if (aiQueryInput && aiQueryBtn) {
+        aiQueryInput.value = text;
+        aiQueryBtn.click();
+      }
     }
 
     // AI Query Response
-    aiQueryBtn.addEventListener('click', () => {
-      const q = aiQueryInput.value.trim();
-      if (!q) {
-        showToast("Please enter a question or syllabus topic for LibAI!");
-        return;
-      }
+    if (aiQueryBtn && aiQueryInput && aiResponseBox) {
+      aiQueryBtn.addEventListener('click', () => {
+        const q = aiQueryInput.value.trim();
+        if (!q) {
+          showToast("Please enter a question or syllabus topic for LibAI!");
+          return;
+        }
 
-      aiResponseBox.style.display = 'block';
+        aiResponseBox.style.display = 'block';
 
-      const lower = q.toLowerCase();
-      let matchBook = (booksData && booksData.length > 0) ? booksData[0] : null;
-      if (booksData && booksData.length > 1) {
-        if (lower.includes('vlsi') || lower.includes('cmos')) matchBook = booksData[1] || matchBook;
-        else if (lower.includes('grid') || lower.includes('solar') || lower.includes('microgrid')) matchBook = booksData[2] || matchBook;
-        else if (lower.includes('robot') || lower.includes('kinematics')) matchBook = booksData[4] || matchBook;
-        else if (lower.includes('pharm') || lower.includes('drug')) matchBook = booksData[5] || matchBook;
-      }
+        const lower = q.toLowerCase();
+        let matchBook = (booksData && booksData.length > 0) ? booksData[0] : null;
+        if (booksData && booksData.length > 1) {
+          if (lower.includes('vlsi') || lower.includes('cmos')) matchBook = booksData[1] || matchBook;
+          else if (lower.includes('grid') || lower.includes('solar') || lower.includes('microgrid')) matchBook = booksData[2] || matchBook;
+          else if (lower.includes('robot') || lower.includes('kinematics')) matchBook = booksData[4] || matchBook;
+          else if (lower.includes('pharm') || lower.includes('drug')) matchBook = booksData[5] || matchBook;
+        }
 
-      if (matchBook) {
-        aiResponseBox.innerHTML = `
-          <strong>LibAI Analysis for:</strong> "<em>${q}</em>"<br><br>
-          Found matching academic resources in the central repository.<br><br>
-          <strong>Recommended Academic Read:</strong> <em>"${matchBook.title}" (${matchBook.author})</em>.<br>
-          <button class="btn-primary" style="margin-top: 10px; padding: 6px 14px; font-size: 0.8rem;" onclick="openInteractiveReader(${matchBook.id})">Open Interactive Reader Now</button>
-        `;
-      } else {
-        aiResponseBox.innerHTML = `
-          <strong>LibAI Analysis for:</strong> "<em>${q}</em>"<br><br>
-          Connecting to digital library server... please try again once books are loaded.
-        `;
-      }
-      showToast("LibAI search completed!");
-    });
+        if (matchBook) {
+          aiResponseBox.innerHTML = `
+            <strong>LibAI Analysis for:</strong> "<em>${q}</em>"<br><br>
+            Found matching academic resources in the central repository.<br><br>
+            <strong>Recommended Academic Read:</strong> <em>"${matchBook.title}" (${matchBook.author})</em>.<br>
+            <button class="btn-primary" style="margin-top: 10px; padding: 6px 14px; font-size: 0.8rem;" onclick="openInteractiveReader(${matchBook.id})">Open Interactive Reader Now</button>
+          `;
+        } else {
+          aiResponseBox.innerHTML = `
+            <strong>LibAI Analysis for:</strong> "<em>${q}</em>"<br><br>
+            Connecting to digital library server... please try again once books are loaded.
+          `;
+        }
+        showToast("LibAI search completed!");
+      });
+    }
 
     // GSAP Micro-Animations
     function initGSAPAnimations() {
       if (!window.gsap) return;
       gsap.registerPlugin(ScrollTrigger);
 
-      gsap.from('.hero-title', {
-        duration: 1,
-        y: 40,
-        opacity: 0,
-        ease: 'power3.out',
-        delay: 0.2
-      });
-
-      gsap.from('.hero-subtitle', {
-        duration: 1,
-        y: 30,
-        opacity: 0,
-        ease: 'power3.out',
-        delay: 0.4
-      });
-
-      gsap.from('.search-box-wrap', {
-        duration: 1,
-        scale: 0.95,
-        opacity: 0,
-        ease: 'back.out(1.7)',
-        delay: 0.6
-      });
+      if (document.querySelector('.search-box-wrap')) {
+        gsap.from('.search-box-wrap', {
+          duration: 0.8,
+          scale: 0.98,
+          opacity: 0,
+          ease: 'power2.out',
+          delay: 0.2
+        });
+      }
 
       const counters = document.querySelectorAll('.counter');
       counters.forEach(counter => {
@@ -11021,27 +10832,42 @@ endmodule
         });
       });
 
-      gsap.fromTo('.journal-card',
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          stagger: 0.12,
-          ease: 'power2.out',
-          clearProps: 'opacity,transform',
-          scrollTrigger: {
-            trigger: '.journals-section',
-            start: 'top 95%',
-            once: true
+      if (document.querySelector('.journal-card')) {
+        gsap.fromTo('.journal-card',
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.12,
+            ease: 'power2.out',
+            clearProps: 'opacity,transform',
+            scrollTrigger: {
+              trigger: '.journals-section',
+              start: 'top 95%',
+              once: true
+            }
           }
-        }
-      );
+        );
+      }
 
-      gsap.fromTo('.ai-assistant-banner',
-        { opacity: 0, scale: 0.96 },
-        {
-          opacity: 1,
+      if (document.querySelector('.ai-assistant-banner')) {
+        gsap.fromTo('.ai-assistant-banner',
+          { opacity: 0, scale: 0.96 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.7,
+            ease: 'power2.out',
+            clearProps: 'opacity,transform',
+            scrollTrigger: {
+              trigger: '#ai-assistant',
+              start: 'top 95%',
+              once: true
+            }
+          }
+        );
+      }
           scale: 1,
           duration: 0.7,
           ease: 'power2.out',
