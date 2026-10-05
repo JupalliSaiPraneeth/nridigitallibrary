@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Digital Library & Interactive E-Books Portal | DR. RVR NRI Institute of Technology</title>
   <meta name="description"
-    content="Official Central Digital Library & Interactive E-Book Reader Portal of DR. RVR NRI Institute of Technology (Deemed to be University).">
+    content="Official Central Digital Library & Interactive E-Book Reader Portal of DR. RVR NRI Institute of Technology (Deemed to be University). Access 150,000+ interactive demo e-books, research journals, and academic resources 24/7.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -7265,7 +7265,7 @@
           </div>
           <div class="reader-pdf-view" id="readerPdfView"
             style="width: 100%; height: 100%; min-height: 0; flex: 1; display: flex; flex-direction: column; background: #1e293b; border-radius: 0; margin: 0; padding: 0;">
-            <iframe id="readerPdfFrame" title="PDF Document Viewer" frameborder="0" src="about:blank"
+            <iframe id="readerPdfFrame" title="PDF Document Viewer" frameborder="0" srcdoc="&lt;html&gt;&lt;body style='background:#1e293b;margin:0;'&gt;&lt;/body&gt;&lt;/html&gt;"
               style="width: 100%; height: 100%; min-height: 0; flex: 1; border: none; border-radius: 0; display: block; margin: 0; padding: 0; background: #1e293b;"></iframe>
           </div>
         </div>
@@ -8231,7 +8231,7 @@
         const hostname = window.location.hostname;
         const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
         const isPrivateIp = hostname.startsWith('192.168.') || hostname.startsWith('10.') || hostname.startsWith('172.');
-        
+
         if (isLocalHost || isPrivateIp) {
           if (window.location.port === '5001') {
             return window.location.origin;
@@ -10868,17 +10868,6 @@ endmodule
           }
         );
       }
-          scale: 1,
-          duration: 0.7,
-          ease: 'power2.out',
-          clearProps: 'opacity,transform',
-          scrollTrigger: {
-            trigger: '#ai-assistant',
-            start: 'top 95%',
-            once: true
-          }
-        }
-      );
 
       window.addEventListener('load', () => {
         ScrollTrigger.refresh();
