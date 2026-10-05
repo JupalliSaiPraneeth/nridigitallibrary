@@ -1339,8 +1339,9 @@
     /* E-Books Grid */
     .books-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 215px));
       gap: 16px;
+      justify-content: flex-start;
     }
 
     .book-card {
@@ -2314,13 +2315,17 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     }
 
-    .books-grid .dept-poster-card {
+    .books-grid .dept-poster-card,
+    .books-grid .book-card {
+      max-width: 215px !important;
+      width: 100% !important;
       min-height: 185px !important;
-      padding: 12px 12px 46px 12px !important;
+      padding: 12px 10px 46px 10px !important;
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
       justify-content: flex-start !important;
+      box-sizing: border-box !important;
     }
 
     .books-grid .poster-bookmark-btn {
@@ -2331,15 +2336,15 @@
     }
 
     .books-grid .poster-circle-emblem {
-      width: 52px !important;
-      height: 52px !important;
+      width: 50px !important;
+      height: 50px !important;
       margin: 0 auto 3px auto !important;
       box-shadow: 0 4px 12px rgba(237, 107, 16, 0.15), 0 0 0 3px rgba(237, 107, 16, 0.08) !important;
     }
 
     .books-grid .poster-open-book-icon {
-      width: 28px !important;
-      height: 28px !important;
+      width: 26px !important;
+      height: 26px !important;
     }
 
     .books-grid .poster-title-section {
@@ -2348,14 +2353,14 @@
     }
 
     .books-grid .poster-dept-title {
-      font-size: 0.94rem !important;
-      letter-spacing: 0.8px !important;
+      font-size: 0.90rem !important;
+      letter-spacing: 0.7px !important;
       margin-bottom: 2px !important;
       line-height: 1.2 !important;
     }
 
     .books-grid .poster-divider {
-      width: 50% !important;
+      width: 55% !important;
       margin: 1px auto 2px auto !important;
       gap: 6px !important;
     }
@@ -2366,13 +2371,13 @@
     }
 
     .books-grid .poster-book-title {
-      font-size: 0.92rem !important;
-      line-height: 1.25 !important;
+      font-size: 0.88rem !important;
+      line-height: 1.22 !important;
       margin: 1px auto 1px auto !important;
     }
 
     .books-grid .poster-book-author {
-      font-size: 0.78rem !important;
+      font-size: 0.76rem !important;
       line-height: 1.2 !important;
       margin: 0 auto 2px auto !important;
     }
@@ -2383,8 +2388,8 @@
     }
 
     .books-grid .poster-cta-btn {
-      padding: 4px 14px !important;
-      font-size: 0.74rem !important;
+      padding: 4px 12px !important;
+      font-size: 0.72rem !important;
       gap: 4px !important;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12) !important;
     }
@@ -5882,8 +5887,9 @@
       }
 
       .books-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 18px;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 215px));
+        gap: 16px;
+        justify-content: flex-start;
       }
     }
 
@@ -5898,8 +5904,9 @@
       }
 
       .books-grid {
-        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-        gap: 18px;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 215px));
+        gap: 16px;
+        justify-content: flex-start;
       }
     }
 
@@ -5941,8 +5948,9 @@
       }
 
       .books-grid {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(180px, 215px));
         gap: 16px;
+        justify-content: flex-start;
       }
     }
 
@@ -6016,8 +6024,9 @@
       }
 
       .books-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(170px, 215px));
         gap: 14px;
+        justify-content: flex-start;
       }
 
       .journals-grid {
@@ -6161,8 +6170,9 @@
       }
 
       .books-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 210px));
+        gap: 12px;
+        justify-content: flex-start;
       }
 
       .journals-grid {
@@ -6441,17 +6451,19 @@
       }
 
       .books-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        grid-template-columns: repeat(auto-fill, minmax(145px, 195px));
+        gap: 10px;
+        justify-content: center;
         width: 100%;
       }
 
-      .books-grid .dept-poster-card {
-        width: 100%;
-        max-width: 100%;
+      .books-grid .dept-poster-card,
+      .books-grid .book-card {
+        width: 100% !important;
+        max-width: 195px !important;
         height: auto;
-        min-height: 180px !important;
-        padding: 12px 12px 46px 12px !important;
+        min-height: 175px !important;
+        padding: 10px 8px 44px 8px !important;
         border-radius: 20px;
         box-sizing: border-box;
       }
