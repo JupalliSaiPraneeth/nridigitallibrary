@@ -1247,13 +1247,24 @@
       margin: 0;
     }
 
-    /* Department Categories Filter */
+    /* Department Categories Filter & Controls */
+    .catalog-controls-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
     .filter-tabs {
       display: flex;
       gap: 6px;
       overflow-x: auto;
       padding-bottom: 4px;
-      margin-bottom: 12px;
+      margin-bottom: 0;
+      flex: 1;
+      min-width: 0;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
@@ -6993,16 +7004,22 @@
   <section class="section" id="catalog">
     <div class="container">
 
-      <div class="section-header">
-        <div>
-          <div class="section-subtitle">
+      <!-- Department Filter Tabs with Count Pills & Sort -->
+      <div class="catalog-controls-bar">
+        <div class="filter-tabs" id="deptTabs">
+          <button class="tab-btn active" data-dept="all">
             <svg class="icon" viewBox="0 0 24 24">
-              <path
-                d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z" />
+              <path d="M12 2l-5.5 9h11zM12 22l5.5-9h-11z" />
             </svg>
-            INTERACTIVE DIGITAL REPOSITORY
-          </div>
-          <h2 class="section-title">Explore Academic E-Books & Manuals</h2>
+            All Departments <span class="tab-count" id="countAll">16</span>
+          </button>
+          <button class="tab-btn" data-dept="CSE">CSE & AI/DS <span class="tab-count">4</span></button>
+          <button class="tab-btn" data-dept="ECE">ECE Electronics <span class="tab-count">3</span></button>
+          <button class="tab-btn" data-dept="EEE">EEE Electrical <span class="tab-count">2</span></button>
+          <button class="tab-btn" data-dept="MECH">Mechanical <span class="tab-count">2</span></button>
+          <button class="tab-btn" data-dept="CIVIL">Civil Engg <span class="tab-count">2</span></button>
+          <button class="tab-btn" data-dept="PHARM">Pharmacy <span class="tab-count">2</span></button>
+          <button class="tab-btn" data-dept="MBA">MBA & Management <span class="tab-count">1</span></button>
         </div>
 
         <div class="sort-control-wrap">
@@ -7013,23 +7030,6 @@
             <option value="newest">Newest 2026</option>
           </select>
         </div>
-      </div>
-
-      <!-- Department Filter Tabs with Count Pills -->
-      <div class="filter-tabs" id="deptTabs">
-        <button class="tab-btn active" data-dept="all">
-          <svg class="icon" viewBox="0 0 24 24">
-            <path d="M12 2l-5.5 9h11zM12 22l5.5-9h-11z" />
-          </svg>
-          All Departments <span class="tab-count" id="countAll">16</span>
-        </button>
-        <button class="tab-btn" data-dept="CSE">CSE & AI/DS <span class="tab-count">4</span></button>
-        <button class="tab-btn" data-dept="ECE">ECE Electronics <span class="tab-count">3</span></button>
-        <button class="tab-btn" data-dept="EEE">EEE Electrical <span class="tab-count">2</span></button>
-        <button class="tab-btn" data-dept="MECH">Mechanical <span class="tab-count">2</span></button>
-        <button class="tab-btn" data-dept="CIVIL">Civil Engg <span class="tab-count">2</span></button>
-        <button class="tab-btn" data-dept="PHARM">Pharmacy <span class="tab-count">2</span></button>
-        <button class="tab-btn" data-dept="MBA">MBA & Management <span class="tab-count">1</span></button>
       </div>
 
       <!-- E-Books Grid -->
