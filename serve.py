@@ -40,8 +40,8 @@ def kill_process_by_pid(pid: int):
         pass
 
 def main():
-    host = "127.0.0.1"
-    port = 8000
+    host = os.environ.get("HOST", "0.0.0.0")
+    port = int(os.environ.get("PORT", "8000"))
     force_restart = "--force" in sys.argv or "-f" in sys.argv
 
     print("=" * 65)

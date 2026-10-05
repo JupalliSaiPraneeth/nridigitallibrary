@@ -54,6 +54,9 @@ os.makedirs(IMAGES_DIR, exist_ok=True)
 app.mount("/storage", StaticFiles(directory=STORAGE_DIR), name="storage")
 
 ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
+SRC_DIR = os.path.join(ROOT_DIR, "src")
+if os.path.exists(SRC_DIR):
+    app.mount("/src", StaticFiles(directory=SRC_DIR), name="src")
 
 from fastapi.responses import FileResponse
 

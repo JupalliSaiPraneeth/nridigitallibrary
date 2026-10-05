@@ -1,12 +1,16 @@
 {
   "name": "nri-digital-library",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "npx serve . -p 3000",
     "start": "npx serve . -p 3000",
-    "server": "python serve.py"
+    "server": "python serve.py",
+    "laptop-server": "node server.js"
   },
   "dependencies": {
-    "@vercel/analytics": "^2.0.1"
+    "@vercel/analytics": "^2.0.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
   }
 }
