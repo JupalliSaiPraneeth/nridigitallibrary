@@ -1255,67 +1255,76 @@
       gap: 12px;
       margin-bottom: 14px;
       flex-wrap: wrap;
-    }
-
-    .filter-tabs {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      margin-bottom: 0;
-      flex: 1;
-      min-width: 0;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .filter-tabs::-webkit-scrollbar {
-      display: none;
-    }
-
-    .tab-btn {
       background: var(--bg-card);
       border: 1px solid var(--border-light);
-      color: var(--text-muted);
-      padding: 6px 14px;
-      border-radius: 30px;
-      font-family: var(--font-body);
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.3s ease;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    }
+
+    .catalog-control-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .tab-btn .tab-count {
-      font-size: 0.75rem;
-      background: rgba(237, 107, 16, 0.12);
-      padding: 2px 8px;
-      border-radius: 12px;
-      color: var(--accent-orange-bright);
+    .catalog-control-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
     }
 
-    .tab-btn:hover {
+    .catalog-select-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .catalog-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-light);
       color: var(--text-main);
+      padding: 8px 36px 8px 14px;
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      min-width: 210px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ed6b10' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 13px;
+    }
+
+    .catalog-select:hover {
       border-color: var(--accent-orange);
+      box-shadow: 0 2px 10px rgba(237, 107, 16, 0.12);
     }
 
-    .tab-btn.active {
-      background: linear-gradient(135deg, #ed6b10, #d15802);
-      color: #fff;
-      border-color: transparent;
-      box-shadow: 0 4px 16px rgba(237, 107, 16, 0.4);
+    .catalog-select:focus {
+      border-color: var(--accent-orange);
+      box-shadow: 0 0 0 3px rgba(237, 107, 16, 0.2);
     }
 
-    .tab-btn.active .tab-count {
-      background: rgba(0, 0, 0, 0.25);
-      color: #fff;
+    .catalog-select option {
+      background-color: var(--bg-secondary);
+      color: var(--text-main);
+      padding: 8px;
     }
 
-    /* Sort Control */
+    /* Legacy tab & sort wrap fallbacks */
+    .filter-tabs { display: none; }
+    .tab-btn { display: none; }
     .sort-control-wrap {
       display: flex;
       align-items: center;
@@ -1323,17 +1332,23 @@
       font-size: 0.88rem;
       color: var(--text-muted);
     }
-
     .sort-select {
-      background: var(--bg-card);
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: var(--bg-primary);
       border: 1px solid var(--border-light);
       color: var(--text-main);
-      padding: 8px 14px;
-      border-radius: var(--radius-md);
+      padding: 8px 36px 8px 14px;
+      border-radius: 10px;
       font-family: var(--font-body);
       font-size: 0.88rem;
+      font-weight: 600;
       outline: none;
       cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ed6b10' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 13px;
     }
 
     /* E-Books Grid */
@@ -6444,14 +6459,31 @@
         gap: 6px;
       }
 
-      .sort-control-wrap {
+      .catalog-controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 10px 14px;
+      }
+
+      .catalog-control-group {
         width: 100%;
         justify-content: space-between;
       }
 
-      .tab-btn {
-        padding: 5px 10px;
-        font-size: 0.76rem;
+      .catalog-select-wrapper {
+        flex: 1;
+        max-width: 220px;
+      }
+
+      .catalog-select {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .sort-control-wrap {
+        width: 100%;
+        justify-content: space-between;
       }
 
       .books-grid {
@@ -7091,31 +7123,43 @@
   <section class="section" id="catalog">
     <div class="container">
 
-      <!-- Department Filter Tabs with Count Pills & Sort -->
+      <!-- Department Filter & Sort Controls Bar -->
       <div class="catalog-controls-bar">
-        <div class="filter-tabs" id="deptTabs">
-          <button class="tab-btn active" data-dept="all">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path d="M12 2l-5.5 9h11zM12 22l5.5-9h-11z" />
+        <div class="catalog-control-group">
+          <label for="catalogDeptSelect" class="catalog-control-label">
+            <svg class="icon" viewBox="0 0 24 24" style="width: 16px; height: 16px; color: var(--accent-orange); flex-shrink: 0;">
+              <path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4-7L2 9h19L12 3z"/>
             </svg>
-            All Departments <span class="tab-count" id="countAll">16</span>
-          </button>
-          <button class="tab-btn" data-dept="CSE">CSE & AI/DS <span class="tab-count">4</span></button>
-          <button class="tab-btn" data-dept="ECE">ECE Electronics <span class="tab-count">3</span></button>
-          <button class="tab-btn" data-dept="EEE">EEE Electrical <span class="tab-count">2</span></button>
-          <button class="tab-btn" data-dept="MECH">Mechanical <span class="tab-count">2</span></button>
-          <button class="tab-btn" data-dept="CIVIL">Civil Engg <span class="tab-count">2</span></button>
-          <button class="tab-btn" data-dept="PHARM">Pharmacy <span class="tab-count">2</span></button>
-          <button class="tab-btn" data-dept="MBA">MBA & Management <span class="tab-count">1</span></button>
+            <span>Department:</span>
+          </label>
+          <div class="catalog-select-wrapper">
+            <select id="catalogDeptSelect" class="catalog-select" aria-label="Filter by Academic Department">
+              <option value="all">All Departments (16)</option>
+              <option value="CSE">CSE & AI/DS (4)</option>
+              <option value="ECE">ECE Electronics (3)</option>
+              <option value="EEE">EEE Electrical (2)</option>
+              <option value="MECH">Mechanical Engg (2)</option>
+              <option value="CIVIL">Civil Engg (2)</option>
+              <option value="PHARM">Pharmacy (2)</option>
+              <option value="MBA">MBA & Management (1)</option>
+            </select>
+          </div>
         </div>
 
-        <div class="sort-control-wrap">
-          <label for="sortSelect">Sort By:</label>
-          <select id="sortSelect" class="sort-select">
-            <option value="featured">Featured Collection</option>
-            <option value="title">Title (A - Z)</option>
-            <option value="newest">Newest 2026</option>
-          </select>
+        <div class="catalog-control-group">
+          <label for="sortSelect" class="catalog-control-label">
+            <svg class="icon" viewBox="0 0 24 24" style="width: 16px; height: 16px; color: var(--accent-orange); flex-shrink: 0;">
+              <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
+            </svg>
+            <span>Sort By:</span>
+          </label>
+          <div class="catalog-select-wrapper">
+            <select id="sortSelect" class="catalog-select" aria-label="Sort Books Catalog">
+              <option value="featured">Featured Collection</option>
+              <option value="title">Title (A - Z)</option>
+              <option value="newest">Newest 2026</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -7355,7 +7399,8 @@
           </div>
           <div class="reader-pdf-view" id="readerPdfView"
             style="width: 100%; height: 100%; min-height: 0; flex: 1; display: flex; flex-direction: column; background: #1e293b; border-radius: 0; margin: 0; padding: 0;">
-            <iframe id="readerPdfFrame" title="PDF Document Viewer" frameborder="0" srcdoc="&lt;html&gt;&lt;body style='background:#1e293b;margin:0;'&gt;&lt;/body&gt;&lt;/html&gt;"
+            <iframe id="readerPdfFrame" title="PDF Document Viewer" frameborder="0"
+              srcdoc="&lt;html&gt;&lt;body style='background:#1e293b;margin:0;'&gt;&lt;/body&gt;&lt;/html&gt;"
               style="width: 100%; height: 100%; min-height: 0; flex: 1; border: none; border-radius: 0; display: block; margin: 0; padding: 0; background: #1e293b;"></iframe>
           </div>
         </div>
@@ -8547,6 +8592,7 @@
     // DOM Elements
     const booksGrid = document.getElementById('booksGrid');
     const deptTabs = document.getElementById('deptTabs');
+    const catalogDeptSelect = document.getElementById('catalogDeptSelect');
     const typeChipsBar = document.getElementById('typeChipsBar');
     const searchInput = document.getElementById('searchInput');
     const departmentFilter = document.getElementById('departmentFilter');
@@ -8841,15 +8887,36 @@
     // Render Books Grid with Filters and Sort
 
     function updateDepartmentCounts() {
-      const depts = ['CSE', 'ECE', 'EEE', 'MECH', 'CIVIL', 'PHARM', 'MBA'];
+      const depts = [
+        { id: 'CSE', name: 'CSE & AI/DS' },
+        { id: 'ECE', name: 'ECE Electronics' },
+        { id: 'EEE', name: 'EEE Electrical' },
+        { id: 'MECH', name: 'Mechanical Engg' },
+        { id: 'CIVIL', name: 'Civil Engg' },
+        { id: 'PHARM', name: 'Pharmacy' },
+        { id: 'MBA', name: 'MBA & Management' }
+      ];
+
       depts.forEach(d => {
-        const countEl = document.getElementById(`count${d}`);
+        const countEl = document.getElementById(`count${d.id}`);
         if (countEl) {
-          countEl.innerText = booksData.filter(b => b.dept === d).length;
+          countEl.innerText = booksData.filter(b => b.dept === d.id).length;
         }
       });
       const totalCountEl = document.getElementById('countAll');
       if (totalCountEl) totalCountEl.innerText = booksData.length;
+
+      if (catalogDeptSelect) {
+        const activeDept = currentDept || catalogDeptSelect.value || 'all';
+        const allCount = booksData.length;
+        let html = `<option value="all"${activeDept === 'all' ? ' selected' : ''}>All Departments (${allCount})</option>`;
+        depts.forEach(d => {
+          const count = booksData.filter(b => b.dept === d.id).length;
+          html += `<option value="${d.id}"${activeDept === d.id ? ' selected' : ''}>${d.name} (${count})</option>`;
+        });
+        catalogDeptSelect.innerHTML = html;
+        catalogDeptSelect.value = activeDept;
+      }
     }
 
     function renderBooks(filterQuery = '') {
@@ -8987,16 +9054,27 @@
       }
     }
 
-    // Filter Tab Click Handlers
-    deptTabs.addEventListener('click', (e) => {
-      const btn = e.target.closest('.tab-btn');
-      if (!btn) return;
+    // Filter Tab & Dropdown Click Handlers
+    if (deptTabs) {
+      deptTabs.addEventListener('click', (e) => {
+        const btn = e.target.closest('.tab-btn');
+        if (!btn) return;
 
-      document.querySelectorAll('#deptTabs .tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentDept = btn.dataset.dept;
-      renderBooks(searchInput.value);
-    });
+        document.querySelectorAll('#deptTabs .tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentDept = btn.dataset.dept;
+        if (catalogDeptSelect) catalogDeptSelect.value = currentDept;
+        renderBooks(searchInput.value);
+      });
+    }
+
+    if (catalogDeptSelect) {
+      catalogDeptSelect.addEventListener('change', () => {
+        currentDept = catalogDeptSelect.value;
+        if (departmentFilter) departmentFilter.value = currentDept;
+        renderBooks(searchInput ? searchInput.value : '');
+      });
+    }
 
     typeChipsBar.addEventListener('click', (e) => {
       const chip = e.target.closest('.type-chip');
@@ -9017,6 +9095,7 @@
     searchSubmitBtn.addEventListener('click', () => {
       if (departmentFilter.value !== 'all') {
         currentDept = departmentFilter.value;
+        if (catalogDeptSelect) catalogDeptSelect.value = currentDept;
         document.querySelectorAll('#deptTabs .tab-btn').forEach(b => {
           b.classList.toggle('active', b.dataset.dept === currentDept);
         });
@@ -9031,6 +9110,10 @@
     // Filter by department and scroll to catalog
     function filterByDeptAndScroll(dept) {
       currentDept = dept;
+
+      if (catalogDeptSelect) {
+        catalogDeptSelect.value = dept;
+      }
 
       // Highlight matching department tab
       document.querySelectorAll('#deptTabs .tab-btn').forEach(btn => {
