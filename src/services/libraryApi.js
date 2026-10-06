@@ -5,32 +5,19 @@
 
 // Environment Variable: Configurable via Vite or window override
 const resolveApiUrl = () => {
-  // If running on a deployed web domain (like onrender.com or vercel.app), use the deployed origin
-  if (typeof window !== "undefined" && window.location.protocol.startsWith("http")) {
-    const hostname = window.location.hostname;
-    if (hostname !== "localhost" && hostname !== "127.0.0.1" && hostname !== "192.168.56.1") {
-      return window.location.origin;
-    }
-  }
-
+  // 1. Check Vite env variable or window globals first
   try {
     if (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_LIBRARY_API_URL) {
       const envVal = import.meta.env.VITE_LIBRARY_API_URL;
       if (envVal && !envVal.includes("8000")) return envVal.replace(/\/+$/, "");
     }
-  } catch (e) {
-    // import.meta not available in standard browser scripts
-  }
+  } catch (e) {}
 
   if (typeof window !== "undefined") {
     try {
       const stored = window.localStorage ? window.localStorage.getItem("VITE_LIBRARY_API_URL") : null;
-      if (stored) {
-        if (stored.includes("8000") || stored.includes("192.168.77.239")) {
-          window.localStorage.removeItem("VITE_LIBRARY_API_URL");
-        } else {
-          return stored.replace(/\/+$/, "");
-        }
+      if (stored && !stored.includes("8000")) {
+        return stored.replace(/\/+$/, "");
       }
     } catch (e) {}
 
@@ -40,9 +27,16 @@ const resolveApiUrl = () => {
     if (window.LIBRARY_API_URL && !window.LIBRARY_API_URL.includes("8000")) {
       return window.LIBRARY_API_URL.replace(/\/+$/, "");
     }
+
+    // 2. Return local origin only when running embedded local Express server
+    const hostname = window.location.hostname;
+    const port = window.location.port;
+    if ((hostname === "localhost" || hostname === "127.0.0.1") && (port === "5000" || port === "5001")) {
+      return window.location.origin;
+    }
   }
 
-  // College Digital Library Server address
+  // 3. Fallback to College Server API
   return "http://172.11.1.71:5000";
 };
 
