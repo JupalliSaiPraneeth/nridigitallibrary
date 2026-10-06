@@ -42,8 +42,8 @@ const resolveApiUrl = () => {
     }
   }
 
-  // Local laptop Express server address
-  return "http://192.168.56.1:5001";
+  // College Digital Library Server address
+  return "http://172.11.1.71:5000";
 };
 
 export const API_URL = resolveApiUrl();

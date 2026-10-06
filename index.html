@@ -15,10 +15,13 @@
     href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 
-  <!-- Vercel Analytics (Guarded for file:// and HTTP/HTTPS production) -->
+  <!-- Favicon -->
+  <link rel="icon" href="nrilogo.png" type="image/png">
+
+  <!-- Vercel Analytics (Guarded: Only loaded on Vercel deployments) -->
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    if (window.location.protocol.startsWith('http')) {
+    if (window.location.protocol.startsWith('http') && window.location.hostname.endsWith('vercel.app')) {
       const vaScript = document.createElement('script');
       vaScript.defer = true;
       vaScript.src = '/_vercel/insights/script.js';
@@ -1376,8 +1379,14 @@
     }
 
     /* Legacy tab & sort wrap fallbacks */
-    .filter-tabs { display: none; }
-    .tab-btn { display: none; }
+    .filter-tabs {
+      display: none;
+    }
+
+    .tab-btn {
+      display: none;
+    }
+
     .sort-control-wrap {
       display: flex;
       align-items: center;
@@ -1385,6 +1394,7 @@
       font-size: 0.88rem;
       color: var(--text-muted);
     }
+
     .sort-select {
       appearance: none;
       -webkit-appearance: none;
@@ -7177,8 +7187,9 @@
       <div class="catalog-controls-bar">
         <div class="catalog-control-group">
           <label for="catalogDeptSelect" class="catalog-control-label">
-            <svg class="icon" viewBox="0 0 24 24" style="width: 16px; height: 16px; color: var(--accent-orange); flex-shrink: 0;">
-              <path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4-7L2 9h19L12 3z"/>
+            <svg class="icon" viewBox="0 0 24 24"
+              style="width: 16px; height: 16px; color: var(--accent-orange); flex-shrink: 0;">
+              <path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4-7L2 9h19L12 3z" />
             </svg>
             <span>Department:</span>
           </label>
@@ -7198,8 +7209,9 @@
 
         <div class="catalog-control-group">
           <label for="sortSelect" class="catalog-control-label">
-            <svg class="icon" viewBox="0 0 24 24" style="width: 16px; height: 16px; color: var(--accent-orange); flex-shrink: 0;">
-              <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
+            <svg class="icon" viewBox="0 0 24 24"
+              style="width: 16px; height: 16px; color: var(--accent-orange); flex-shrink: 0;">
+              <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z" />
             </svg>
             <span>Sort By:</span>
           </label>
@@ -7449,8 +7461,7 @@
           </div>
           <div class="reader-pdf-view" id="readerPdfView"
             style="width: 100%; height: 100%; min-height: 0; flex: 1; display: flex; flex-direction: column; background: #1e293b; border-radius: 0; margin: 0; padding: 0;">
-            <iframe id="readerPdfFrame" title="PDF Document Viewer" frameborder="0"
-              srcdoc="&lt;html&gt;&lt;body style='background:#1e293b;margin:0;'&gt;&lt;/body&gt;&lt;/html&gt;"
+            <iframe id="readerPdfFrame" title="PDF Document Viewer" frameborder="0" src="about:blank"
               style="width: 100%; height: 100%; min-height: 0; flex: 1; border: none; border-radius: 0; display: block; margin: 0; padding: 0; background: #1e293b;"></iframe>
           </div>
         </div>
@@ -8442,7 +8453,7 @@
           return window.VITE_LIBRARY_API_URL.replace(/\/+$/, '');
         }
       }
-      return 'http://127.0.0.1:5001';
+      return 'http://172.11.1.71:5000';
     }
 
     window.switchLibraryServer = function (newUrl) {
@@ -9642,6 +9653,7 @@
       const fullPdfUrl = normalizeMediaUrl(rawUrl);
       const pdfFrame = document.getElementById('readerPdfFrame');
       if (pdfFrame) {
+        pdfFrame.removeAttribute('srcdoc');
         if (fullPdfUrl) {
           pdfFrame.src = fullPdfUrl;
         } else {

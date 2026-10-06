@@ -60,6 +60,18 @@ if os.path.exists(SRC_DIR):
 
 from fastapi.responses import FileResponse
 
+@app.get("/health")
+@app.get("/api/health")
+def health_check():
+    return {"status": "ok", "service": "digital-library-api", "timestamp": datetime.datetime.utcnow().isoformat()}
+
+@app.get("/favicon.ico")
+def serve_favicon():
+    favicon_path = os.path.join(ROOT_DIR, "nrilogo.png")
+    if os.path.exists(favicon_path):
+        return FileResponse(favicon_path)
+    raise HTTPException(status_code=404, detail="Favicon not found")
+
 @app.get("/")
 def serve_index():
     index_path = os.path.join(ROOT_DIR, "index.html")
