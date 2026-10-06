@@ -166,17 +166,9 @@ export async function getBooks(timeoutMs = 6000) {
     }
 
     const data = await response.json();
-    return Array.isArray(data) ? data.map(mapBookToFrontendModel) : data;
+    const rawList = Array.isArray(data) ? data : (Array.isArray(data?.books) ? data.books : []);
+    return rawList.map(mapBookToFrontendModel);
   } catch (err) {
-    if (API_URL.includes("192.168.56.1:5001")) {
-      try {
-        const fallbackRes = await fetch("http://127.0.0.1:5001/api/books", { signal: controller.signal });
-        if (fallbackRes.ok) {
-          const data = await fallbackRes.json();
-          return Array.isArray(data) ? data.map(mapBookToFrontendModel) : data;
-        }
-      } catch (e) {}
-    }
     throw err;
   } finally {
     clearTimeout(timer);
