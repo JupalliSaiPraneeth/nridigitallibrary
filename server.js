@@ -197,7 +197,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.resolve('index.html'));
 });
 
-// Start listening with EADDRINUSE fallback to 5001 if 5000 is occupied
+// Start listening with EADDRINUSE fallback to 5001+ if port is occupied
 function startCollegeServer(portToUse) {
   const server = app.listen(portToUse, HOST, () => {
     const ips = getLocalIpAddresses();
@@ -215,9 +215,10 @@ function startCollegeServer(portToUse) {
   });
 
   server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE' && portToUse === 5000) {
-      console.warn(`[College Server] Port 5000 is occupied (e.g. by PostgreSQL). Retrying on port 5001...`);
-      startCollegeServer(5001);
+    if (err.code === 'EADDRINUSE' && portToUse < 5010) {
+      const nextPort = portToUse + 1;
+      console.warn(`[College Server] Port ${portToUse} is occupied. Trying next port ${nextPort}...`);
+      startCollegeServer(nextPort);
     } else {
       console.error('[College Server] Failed to start server:', err);
     }

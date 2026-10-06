@@ -14,9 +14,10 @@ function startServer(portToUse) {
   });
 
   server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE' && portToUse === 5000) {
-      logger.warn(`Port 5000 is occupied (e.g. PostgreSQL/system process). Falling back to port 5001...`);
-      startServer(5001);
+    if (err.code === 'EADDRINUSE' && portToUse < 5010) {
+      const nextPort = portToUse + 1;
+      logger.warn(`Port ${portToUse} is occupied. Trying next port ${nextPort}...`);
+      startServer(nextPort);
     } else {
       logger.error(`Failed to start server on port ${portToUse}:`, err);
     }
