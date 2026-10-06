@@ -7,7 +7,7 @@ import { logger } from '../utils/logger.js';
  * Resolves and validates a file path securely within BOOK_STORAGE_PATH.
  * Prevents Directory Traversal (../, ..\, encoded traversal, symlink escapes).
  */
-export function resolveSafeBookPath(relativePath) {
+export function resolveSafeBookPath(relativePath, customStorageRoot) {
   if (!relativePath || typeof relativePath !== 'string') {
     throw new Error('Invalid file path specified');
   }
@@ -19,7 +19,7 @@ export function resolveSafeBookPath(relativePath) {
   }
 
   // Resolve absolute path against root storage directory
-  const rootDir = path.resolve(config.bookStoragePath);
+  const rootDir = customStorageRoot || path.resolve(config.bookStoragePath);
   const resolvedPath = path.resolve(rootDir, relativePath);
 
   // Enforce boundary check: Resolved path MUST start with storage root directory

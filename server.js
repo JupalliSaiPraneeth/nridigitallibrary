@@ -24,21 +24,35 @@ function getLocalIpAddresses() {
   return addresses;
 }
 
-// Configurable College Server Book Folder Path (Default: C:\e book)
-const CONFIGURED_FOLDER = process.env.COLLEGE_BOOK_FOLDER_PATH || process.env.BOOKS_DIR || 'C:\\e book';
-const DEV_FALLBACK_FOLDER = path.resolve('C:\\Users\\jupal\\Downloads\\books');
-const BOOKS_DIR = fs.existsSync(CONFIGURED_FOLDER)
-  ? CONFIGURED_FOLDER
-  : (fs.existsSync(DEV_FALLBACK_FOLDER) ? DEV_FALLBACK_FOLDER : CONFIGURED_FOLDER);
+// Configurable College Server Book Folder Path
+function resolveBookFolder() {
+  const candidateFolders = [
+    process.env.COLLEGE_BOOK_FOLDER_PATH,
+    process.env.BOOKS_DIR,
+    'C:\\e book',
+    'C:\\Users\\jupal\\Downloads\\books',
+    path.resolve('storage'),
+    path.resolve('books')
+  ].filter(Boolean);
 
-// Ensure directory exists safely
-if (!fs.existsSync(BOOKS_DIR)) {
-  try {
-    fs.mkdirSync(BOOKS_DIR, { recursive: true });
-  } catch (e) {
-    console.warn(`[College Server] Could not create folder ${BOOKS_DIR}:`, e.message);
+  for (const folder of candidateFolders) {
+    if (fs.existsSync(folder)) {
+      try {
+        const files = fs.readdirSync(folder);
+        if (files.some(f => ['.pdf', '.epub'].includes(path.extname(f).toLowerCase()))) {
+          return path.resolve(folder);
+        }
+      } catch (e) {}
+    }
   }
+  const fallback = path.resolve('C:\\e book');
+  if (!fs.existsSync(fallback)) {
+    try { fs.mkdirSync(fallback, { recursive: true }); } catch (e) {}
+  }
+  return fallback;
 }
+
+const BOOKS_DIR = resolveBookFolder();
 
 // Enable CORS for frontend communication (configurable via env for production)
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
@@ -46,17 +60,20 @@ app.use(cors({ origin: ALLOWED_ORIGIN }));
 app.use(express.json());
 
 // Expose book files directly through /books
-app.use('/books', express.static(BOOKS_DIR, {
-  setHeaders: (res, filePath) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    if (filePath.endsWith('.pdf')) {
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'inline');
-    } else if (filePath.endsWith('.epub')) {
-      res.setHeader('Content-Type', 'application/epub+zip');
+app.use('/books', (req, res, next) => {
+  const currentBooksDir = resolveBookFolder();
+  express.static(currentBooksDir, {
+    setHeaders: (resHeader, filePath) => {
+      resHeader.setHeader('Access-Control-Allow-Origin', '*');
+      if (filePath.endsWith('.pdf')) {
+        resHeader.setHeader('Content-Type', 'application/pdf');
+        resHeader.setHeader('Content-Disposition', 'inline');
+      } else if (filePath.endsWith('.epub')) {
+        resHeader.setHeader('Content-Type', 'application/epub+zip');
+      }
     }
-  }
-}));
+  })(req, res, next);
+});
 
 // Expose static frontend files from project root so devices on LAN/web can open the full web portal
 app.use(express.static(path.resolve('.')));
@@ -82,17 +99,17 @@ app.get('/favicon.ico', (req, res) => {
 // Books catalog API endpoint - Scans college book directory
 app.get('/api/books', (req, res) => {
   try {
-    if (!fs.existsSync(BOOKS_DIR)) {
+    const activeDir = resolveBookFolder();
+    if (!fs.existsSync(activeDir)) {
       return res.json([]);
     }
 
-    const files = fs.readdirSync(BOOKS_DIR);
+    const files = fs.readdirSync(activeDir);
     const validExtensions = ['.pdf', '.epub'];
 
     const books = [];
     let idCounter = 1;
 
-    // Use incoming host or fallback to College Server IP
     const hostHeader = req.get('host');
     const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
     const baseUrl = hostHeader
@@ -103,7 +120,6 @@ app.get('/api/books', (req, res) => {
       const ext = path.extname(file).toLowerCase();
       if (!validExtensions.includes(ext)) continue;
 
-      // Generate title by removing the file extension
       const title = path.basename(file, ext).trim();
       const fileType = ext.replace('.', '');
       const encodedFileName = encodeURIComponent(file);
@@ -128,12 +144,13 @@ app.get('/api/books', (req, res) => {
 // Single book details API endpoint
 app.get('/api/books/:id', (req, res) => {
   try {
+    const activeDir = resolveBookFolder();
     const bookId = parseInt(req.params.id, 10);
-    if (!fs.existsSync(BOOKS_DIR)) {
+    if (!fs.existsSync(activeDir)) {
       return res.status(404).json({ error: 'Book not found' });
     }
 
-    const files = fs.readdirSync(BOOKS_DIR);
+    const files = fs.readdirSync(activeDir);
     const validExtensions = ['.pdf', '.epub'];
     let idCounter = 1;
 
@@ -180,18 +197,31 @@ app.get('/', (req, res) => {
   res.sendFile(path.resolve('index.html'));
 });
 
-// Start listening on 0.0.0.0:5000 (or PORT env)
-app.listen(PORT, HOST, () => {
-  const ips = getLocalIpAddresses();
-  const wifiIface = ips.find(i => i.name.toLowerCase().includes('wi-fi') || i.name.toLowerCase().includes('wireless')) || ips[0];
+// Start listening with EADDRINUSE fallback to 5001 if 5000 is occupied
+function startCollegeServer(portToUse) {
+  const server = app.listen(portToUse, HOST, () => {
+    const ips = getLocalIpAddresses();
+    const wifiIface = ips.find(i => i.name.toLowerCase().includes('wi-fi') || i.name.toLowerCase().includes('wireless')) || ips[0];
 
-  console.log('='.repeat(65));
-  console.log(' [Digital Library - College Book Server API]');
-  console.log('='.repeat(65));
-  console.log(` College Server IP: http://${DEFAULT_COLLEGE_IP}:${PORT}`);
-  console.log(` Bound Host:        ${HOST}:${PORT}`);
-  console.log(` Book Directory:    ${BOOKS_DIR}`);
-  console.log(` Health Endpoint:   http://${DEFAULT_COLLEGE_IP}:${PORT}/api/health`);
-  console.log(` Books API:         http://${DEFAULT_COLLEGE_IP}:${PORT}/api/books`);
-  console.log('='.repeat(65));
-});
+    console.log('='.repeat(65));
+    console.log(' [Digital Library - College Book Server API]');
+    console.log('='.repeat(65));
+    console.log(` Active Host/Port:   http://localhost:${portToUse}`);
+    console.log(` College Server IP: http://${DEFAULT_COLLEGE_IP}:${portToUse}`);
+    console.log(` Book Directory:    ${resolveBookFolder()}`);
+    console.log(` Health Endpoint:   http://localhost:${portToUse}/api/health`);
+    console.log(` Books API:         http://localhost:${portToUse}/api/books`);
+    console.log('='.repeat(65));
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE' && portToUse === 5000) {
+      console.warn(`[College Server] Port 5000 is occupied (e.g. by PostgreSQL). Retrying on port 5001...`);
+      startCollegeServer(5001);
+    } else {
+      console.error('[College Server] Failed to start server:', err);
+    }
+  });
+}
+
+startCollegeServer(PORT);

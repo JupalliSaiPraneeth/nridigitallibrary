@@ -4,6 +4,7 @@
  */
 
 // Environment Variable: Configurable via Vite or window override
+// Environment Variable: Configurable via Vite or window override
 export const resolveApiUrl = () => {
   if (typeof window !== "undefined") {
     try {
@@ -22,8 +23,8 @@ export const resolveApiUrl = () => {
 
     const hostname = window.location.hostname;
     const port = window.location.port;
-    if ((hostname === "localhost" || hostname === "127.0.0.1") && (port === "5000" || port === "5001")) {
-      return window.location.origin;
+    if ((hostname === "localhost" || hostname === "127.0.0.1")) {
+      return (port === "5000" || port === "5001") ? window.location.origin : "http://localhost:5001";
     }
   }
 
@@ -34,7 +35,7 @@ export const resolveApiUrl = () => {
     }
   } catch (e) {}
 
-  return "http://172.11.1.71:5000";
+  return "http://localhost:5001";
 };
 
 export const API_URL = resolveApiUrl();
@@ -139,30 +140,48 @@ export function mapBookToFrontendModel(book, customApiUrl) {
 }
 
 /**
- * Fetch books from the Server REST API.
+ * Fetch books from the Server REST API with automatic candidate port fallback.
  */
 export async function getBooks(timeoutMs = 6000) {
   const activeApiUrl = resolveApiUrl();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
-  try {
-    const response = await fetch(`${activeApiUrl}/api/books`, {
-      signal: controller.signal
-    });
+  const candidateUrls = Array.from(new Set([
+    activeApiUrl,
+    'http://localhost:5001',
+    'http://127.0.0.1:5001',
+    'http://172.11.1.71:5000',
+    'http://localhost:5000'
+  ]));
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch books: ${response.statusText}`);
+  let lastError = null;
+
+  try {
+    for (const baseUrl of candidateUrls) {
+      try {
+        const response = await fetch(`${baseUrl}/api/books`, {
+          signal: controller.signal
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const rawList = Array.isArray(data) ? data : (Array.isArray(data?.books) ? data.books : []);
+          if (baseUrl !== activeApiUrl && typeof window !== 'undefined') {
+            window.VITE_LIBRARY_API_URL = baseUrl;
+            try { localStorage.setItem('VITE_LIBRARY_API_URL', baseUrl); } catch (e) {}
+          }
+          return rawList.map(b => mapBookToFrontendModel(b, baseUrl));
+        }
+      } catch (err) {
+        lastError = err;
+      }
     }
 
-    const data = await response.json();
-    const rawList = Array.isArray(data) ? data : (Array.isArray(data?.books) ? data.books : []);
-    return rawList.map(b => mapBookToFrontendModel(b, activeApiUrl));
-  } catch (err) {
     if (typeof window !== 'undefined' && window.location.protocol === 'https:' && activeApiUrl.startsWith('http:')) {
       throw new Error(`HTTPS Mixed Content Protection: Cannot fetch HTTP API (${activeApiUrl}) from HTTPS site (${window.location.origin}).`);
     }
-    throw err;
+    throw lastError || new Error('Failed to connect to digital library backend API.');
   } finally {
     clearTimeout(timer);
   }
@@ -174,7 +193,7 @@ if (typeof window !== "undefined") {
     get API_URL() { return resolveApiUrl(); },
     set API_URL(val) {
       if (val) {
-        localStorage.setItem("VITE_LIBRARY_API_URL", val);
+        try { localStorage.setItem("VITE_LIBRARY_API_URL", val); } catch (e) {}
         window.VITE_LIBRARY_API_URL = val;
         window.LIBRARY_API_URL = val;
       }

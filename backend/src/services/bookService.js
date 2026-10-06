@@ -8,23 +8,60 @@ import { logger } from '../utils/logger.js';
 // In-memory catalog cache mapping secure book IDs to relative file paths
 let bookCatalogCache = [];
 let bookIdToPathMap = new Map();
+let activeStorageRoot = null;
+
+export function getActiveStorageRoot() {
+  if (activeStorageRoot && fs.existsSync(activeStorageRoot)) {
+    try {
+      const testFiles = fs.readdirSync(activeStorageRoot);
+      if (testFiles.some(f => config.allowedExtensions.includes(path.extname(f).toLowerCase()))) {
+        return activeStorageRoot;
+      }
+    } catch (e) {}
+  }
+
+  const candidateFolders = [
+    config.bookStoragePath,
+    'C:\\e book',
+    'C:\\Users\\jupal\\Downloads\\books',
+    path.resolve('storage'),
+    path.resolve('backend/storage'),
+    path.resolve('books')
+  ].filter(Boolean);
+
+  for (const folder of candidateFolders) {
+    if (fs.existsSync(folder)) {
+      try {
+        const files = fs.readdirSync(folder);
+        if (files.some(f => config.allowedExtensions.includes(path.extname(f).toLowerCase()))) {
+          activeStorageRoot = path.resolve(folder);
+          return activeStorageRoot;
+        }
+      } catch (e) {}
+    }
+  }
+
+  activeStorageRoot = path.resolve(config.bookStoragePath || 'C:\\e book');
+  if (!fs.existsSync(activeStorageRoot)) {
+    try {
+      fs.mkdirSync(activeStorageRoot, { recursive: true });
+    } catch (e) {
+      logger.error('Failed to create storage directory', e);
+    }
+  }
+  return activeStorageRoot;
+}
 
 /**
  * Scans storage directory recursively for supported books.
  */
 export function scanBookStorage() {
-  const rootDir = path.resolve(config.bookStoragePath);
+  const rootDir = getActiveStorageRoot();
   bookCatalogCache = [];
   bookIdToPathMap.clear();
 
   if (!fs.existsSync(rootDir)) {
-    logger.warn(`Storage directory ${rootDir} does not exist. Creating fallback...`);
-    try {
-      fs.mkdirSync(rootDir, { recursive: true });
-    } catch (e) {
-      logger.error('Failed to create storage directory', e);
-      return [];
-    }
+    return [];
   }
 
   function walk(currentDir) {
@@ -101,5 +138,5 @@ export function getBookFilePathById(bookId) {
     throw new Error('Book ID not found');
   }
 
-  return resolveSafeBookPath(relativePath);
+  return resolveSafeBookPath(relativePath, getActiveStorageRoot());
 }
