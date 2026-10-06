@@ -4,15 +4,7 @@
  */
 
 // Environment Variable: Configurable via Vite or window override
-const resolveApiUrl = () => {
-  // 1. Check Vite env variable or window globals first
-  try {
-    if (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_LIBRARY_API_URL) {
-      const envVal = import.meta.env.VITE_LIBRARY_API_URL;
-      if (envVal && !envVal.includes("8000")) return envVal.replace(/\/+$/, "");
-    }
-  } catch (e) {}
-
+export const resolveApiUrl = () => {
   if (typeof window !== "undefined") {
     try {
       const stored = window.localStorage ? window.localStorage.getItem("VITE_LIBRARY_API_URL") : null;
@@ -28,7 +20,6 @@ const resolveApiUrl = () => {
       return window.LIBRARY_API_URL.replace(/\/+$/, "");
     }
 
-    // 2. Return local origin only when running embedded local Express server
     const hostname = window.location.hostname;
     const port = window.location.port;
     if ((hostname === "localhost" || hostname === "127.0.0.1") && (port === "5000" || port === "5001")) {
@@ -36,7 +27,13 @@ const resolveApiUrl = () => {
     }
   }
 
-  // 3. Fallback to College Server API
+  try {
+    if (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_LIBRARY_API_URL) {
+      const envVal = import.meta.env.VITE_LIBRARY_API_URL;
+      if (envVal && !envVal.includes("8000")) return envVal.replace(/\/+$/, "");
+    }
+  } catch (e) {}
+
   return "http://172.11.1.71:5000";
 };
 
@@ -44,12 +41,11 @@ export const API_URL = resolveApiUrl();
 
 /**
  * Maps fields from server response to the existing frontend book model.
- * Handles both the local laptop server format and the deployed server format.
  */
-export function mapBookToFrontendModel(book) {
+export function mapBookToFrontendModel(book, customApiUrl) {
   if (!book) return null;
+  const currentApiUrl = customApiUrl || resolveApiUrl();
 
-  // Department mapping based on title/category keywords
   const deptMap = {
     "computer science": "CSE",
     "information technology": "CSE",
@@ -92,15 +88,14 @@ export function mapBookToFrontendModel(book) {
   const authorName = book.author || (Array.isArray(book.authors) && book.authors.length ? book.authors.join(", ") : "Academic Scholars");
   const authorsList = Array.isArray(book.authors) && book.authors.length ? book.authors : [authorName];
 
-  // Direct server URL (e.g. http://192.168.56.1:5001/books/Python.pdf or /storage/pdfs/...)
   let fileUrl = book.url || book.file || book.pdf_path || book.pdfUrl || "";
   if (fileUrl && fileUrl.startsWith("/") && !fileUrl.startsWith("//")) {
-    fileUrl = `${API_URL}${fileUrl}`;
+    fileUrl = `${currentApiUrl}${fileUrl}`;
   }
 
   let coverUrl = book.cover || book.cover_url || "";
   if (coverUrl && coverUrl.startsWith("/") && !coverUrl.startsWith("//")) {
-    coverUrl = `${API_URL}${coverUrl}`;
+    coverUrl = `${currentApiUrl}${coverUrl}`;
   }
 
   const pageCount = book.total_pages || book.pagesCount || 100;
@@ -147,11 +142,12 @@ export function mapBookToFrontendModel(book) {
  * Fetch books from the Server REST API.
  */
 export async function getBooks(timeoutMs = 6000) {
+  const activeApiUrl = resolveApiUrl();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const response = await fetch(`${API_URL}/api/books`, {
+    const response = await fetch(`${activeApiUrl}/api/books`, {
       signal: controller.signal
     });
 
@@ -161,8 +157,11 @@ export async function getBooks(timeoutMs = 6000) {
 
     const data = await response.json();
     const rawList = Array.isArray(data) ? data : (Array.isArray(data?.books) ? data.books : []);
-    return rawList.map(mapBookToFrontendModel);
+    return rawList.map(b => mapBookToFrontendModel(b, activeApiUrl));
   } catch (err) {
+    if (typeof window !== 'undefined' && window.location.protocol === 'https:' && activeApiUrl.startsWith('http:')) {
+      throw new Error(`HTTPS Mixed Content Protection: Cannot fetch HTTP API (${activeApiUrl}) from HTTPS site (${window.location.origin}).`);
+    }
     throw err;
   } finally {
     clearTimeout(timer);
@@ -172,10 +171,19 @@ export async function getBooks(timeoutMs = 6000) {
 // Expose on global window object for browser script tag compatibility
 if (typeof window !== "undefined") {
   window.LibraryApi = {
-    API_URL,
+    get API_URL() { return resolveApiUrl(); },
+    set API_URL(val) {
+      if (val) {
+        localStorage.setItem("VITE_LIBRARY_API_URL", val);
+        window.VITE_LIBRARY_API_URL = val;
+        window.LIBRARY_API_URL = val;
+      }
+    },
     getBooks,
-    mapBookToFrontendModel
+    mapBookToFrontendModel,
+    resolveApiUrl
   };
   window.getBooks = getBooks;
-  window.LIBRARY_API_URL = API_URL;
+  window.LIBRARY_API_URL = resolveApiUrl();
 }
+
