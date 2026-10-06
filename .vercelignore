@@ -1,0 +1,10 @@
+# Ignore Python build triggers on Vercel
+.python-version
+pyproject.toml
+requirements.txt
+Dockerfile
+render.yaml
+Procfile
+backend/
+docs/
+nginx/

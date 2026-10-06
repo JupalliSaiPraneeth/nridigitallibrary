@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "pdf.min.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "pdf.worker.min.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "nrilogo.png",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "college.webp",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "nridark-removebg-preview.png",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "src/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}
