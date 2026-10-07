@@ -1224,13 +1224,13 @@
       border: none;
     }
 
-    /* Photo anchored to the right edge (bleeding edge-to-edge) */
+    /* Photo anchored to the right edge (extended width up to the marked text boundary) */
     .full-bleed-hero .nri-hero-photo-right {
       position: absolute;
       top: 0;
       bottom: 0;
       right: 0;
-      width: 58%;
+      width: 66%;
       background-size: cover;
       background-position: right center;
       background-repeat: no-repeat;
@@ -1243,16 +1243,16 @@
       }
     }
 
-    /* Seamless Fade into Left Solid Background */
+    /* Seamless Fade right beside the text edge */
     .full-bleed-hero .nri-hero-gradient-overlay {
       position: absolute;
       inset: 0;
       background: linear-gradient(
         90deg,
         var(--bg-secondary) 0%,
-        var(--bg-secondary) 18%,
-        rgba(255, 255, 255, 0.72) 42%,
-        rgba(255, 255, 255, 0) 75%
+        rgba(255, 255, 255, 0.95) 8%,
+        rgba(255, 255, 255, 0.45) 18%,
+        rgba(255, 255, 255, 0) 30%
       );
     }
 
@@ -1260,9 +1260,9 @@
       background: linear-gradient(
         90deg,
         var(--bg-secondary) 0%,
-        var(--bg-secondary) 18%,
-        rgba(15, 17, 24, 0.78) 42%,
-        rgba(15, 17, 24, 0) 75%
+        rgba(15, 17, 24, 0.95) 8%,
+        rgba(15, 17, 24, 0.45) 18%,
+        rgba(15, 17, 24, 0) 30%
       );
     }
 
@@ -1285,7 +1285,7 @@
 
     /* Text Content */
     .full-bleed-hero .nri-hero-text-content {
-      max-width: 680px;
+      max-width: 540px;
       margin-bottom: 32px;
     }
 
