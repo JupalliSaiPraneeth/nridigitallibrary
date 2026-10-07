@@ -65,7 +65,7 @@ export const Navbar = () => {
           </button>
 
           <button
-            className="btn-secondary"
+            className="btn-secondary nav-ingest-btn"
             onClick={handleOpenIngest}
             title="AI Ingest & Book Management"
           >
@@ -74,7 +74,7 @@ export const Navbar = () => {
           </button>
 
           <button
-            className="btn-icon"
+            className="btn-icon nav-shelf-btn"
             onClick={handleOpenShelf}
             title="My Saved Bookshelf"
           >
@@ -83,12 +83,12 @@ export const Navbar = () => {
           </button>
 
           {user ? (
-            <button className="btn-primary" onClick={logout} title="Click to Logout">
+            <button className="btn-primary nav-login-btn" onClick={logout} title="Click to Logout">
               <User className="icon-xs" />
               <span>{user.name}</span>
             </button>
           ) : (
-            <button className="btn-primary" onClick={handleOpenLogin}>
+            <button className="btn-primary nav-login-btn" onClick={handleOpenLogin}>
               <User className="icon-xs" />
               <span>Login Portal</span>
             </button>

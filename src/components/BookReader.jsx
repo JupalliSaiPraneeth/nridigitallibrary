@@ -18,6 +18,7 @@ export const BookReader = ({
   const [search, setSearch] = useState("");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
+  const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
 
   const pdfSource = book?.pdfUrl || book?.pdf || book?.file || book?.pdf_path;
   const [pdfCurrentUrl, setPdfCurrentUrl] = useState(pdfSource);
@@ -430,9 +431,10 @@ export const BookReader = ({
             {/* MOBILE MENU BUTTON */}
 
             <button
-              className="reader-tool-btn reader-menu-btn"
+              className={`reader-tool-btn reader-menu-btn ${mobileToolsOpen ? "active" : ""}`}
               id="readerMenuBtn"
               title="More Reading Tools"
+              onClick={() => setMobileToolsOpen((prev) => !prev)}
             >
               <svg
                 className="icon"
@@ -454,7 +456,7 @@ export const BookReader = ({
             =================================================== */}
 
             <div
-              className="reader-collapsible-tools"
+              className={`reader-collapsible-tools ${mobileToolsOpen ? "active" : ""}`}
               id="readerCollapsibleTools"
             >
 
