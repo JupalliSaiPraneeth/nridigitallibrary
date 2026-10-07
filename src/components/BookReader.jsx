@@ -531,6 +531,24 @@ export const BookReader = ({
                 Save
               </button>
 
+              {/* DOWNLOAD ORIGINAL PDF */}
+              <a
+                className="reader-tool-btn"
+                id="readerDownloadBtn"
+                title="Download Original PDF from College Server Storage"
+                href={book?.downloadUrl || (pdfSource ? `${pdfSource.split('#')[0].replace(/\/file$/, '')}/download` : '#')}
+                download
+                style={{ textDecoration: 'none' }}
+              >
+                <svg
+                  className="icon"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                </svg>
+                Download
+              </a>
+
 
               {/* FULLSCREEN */}
 

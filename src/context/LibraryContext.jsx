@@ -173,6 +173,7 @@ export const LibraryProvider = ({ children }) => {
       setBooks(processed);
     } catch (err) {
       console.warn('API fetch warning, using fallback books dataset:', err);
+      setError('College book server storage is currently offline or connecting via fallback mode. Displaying verified academic curriculum library.');
       // Fallback sample books if backend is offline
       const fallbackList = [
         {

@@ -1,0 +1,36 @@
+# ==============================================================================
+# CLOUDFLARE TUNNEL CONFIGURATION (cloudflared)
+# ==============================================================================
+# This configuration creates an encrypted outbound tunnel from your College Server
+# to the Cloudflare Edge network.
+#
+# BENEFITS:
+# 1. Origin Protection: Your College Server's real IP is NEVER exposed.
+# 2. No Inbound Ports: No router port-forwarding (ports 80, 443, 445, 139 stay CLOSED).
+# 3. NAT/CGNAT Traversal: Works even if college campus network is behind strict NAT/firewalls.
+# 4. SMB Protected: Windows File Sharing / SMB is completely inaccessible from internet.
+# ==============================================================================
+
+# Tunnel UUID (Obtained when running: cloudflared tunnel create library-api)
+tunnel: YOUR_TUNNEL_UUID_HERE
+credentials-file: C:\Users\Administrator\.cloudflared\YOUR_TUNNEL_UUID_HERE.json
+# On Linux: /etc/cloudflared/YOUR_TUNNEL_UUID_HERE.json
+
+# Ingress Rules: Route incoming public HTTPS requests to internal services
+ingress:
+  # Public API Subdomain -> Local Backend API (Express on port 5000 or NGINX)
+  - hostname: api.yourdomain.com
+    service: http://localhost:5000
+    originRequest:
+      connectTimeout: 30s
+      noTLSVerify: false
+      http2Origin: false
+      # Disable buffering on tunnel for real-time PDF range streaming
+      disableChunkedEncoding: false
+
+  # Optional: Route directly to local NGINX reverse proxy if running
+  # - hostname: api.yourdomain.com
+  #   service: http://localhost:80
+
+  # Catch-all rule (Required by Cloudflare Tunnel specification)
+  - service: http_status:404

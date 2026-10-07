@@ -5,7 +5,7 @@ import json
 import shutil
 import datetime
 from typing import Optional, List
-from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException, BackgroundTasks, Query
+from fastapi import FastAPI, UploadFile, File, Form, Depends, HTTPException, BackgroundTasks, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -68,12 +68,22 @@ SRC_DIR = os.path.join(ROOT_DIR, "src")
 if os.path.exists(SRC_DIR):
     app.mount("/src", StaticFiles(directory=SRC_DIR), name="src")
 
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 
 @app.get("/health")
 @app.get("/api/health")
 def health_check():
-    return {"status": "ok", "service": "digital-library-api", "timestamp": datetime.datetime.utcnow().isoformat()}
+    storage_path = os.environ.get("BOOK_STORAGE_PATH", "C:\\e book")
+    is_accessible = os.path.exists(storage_path)
+    return {
+        "status": "ok",
+        "service": "digital-library-api",
+        "storage": {
+            "status": "available" if is_accessible else "unavailable",
+            "configured_path": storage_path
+        },
+        "timestamp": datetime.datetime.utcnow().isoformat()
+    }
 
 @app.get("/favicon.ico")
 def serve_favicon():
@@ -598,6 +608,134 @@ def get_book_details(id: int, db: Session = Depends(get_db)):
             for ch in book.chapters
         ]
     }
+
+
+@app.get("/api/books/{id}/file")
+async def stream_book_file(id: int, request: Request, db: Session = Depends(get_db)):
+    """
+    Streams PDF file with HTTP Range requests (RFC 7233) for seeking in large PDF volumes.
+    """
+    book = db.query(Book).filter(Book.id == id).first()
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    abs_pdf_path = None
+    if book.pdf_path:
+        cand1 = os.path.join(STORAGE_DIR, book.pdf_path.lstrip("/").replace("storage/", ""))
+        cand2 = os.path.join(ROOT_DIR, book.pdf_path.lstrip("/"))
+        cand3 = os.path.abspath(book.pdf_path)
+        for cand in [cand1, cand2, cand3]:
+            if os.path.exists(cand) and os.path.isfile(cand):
+                abs_pdf_path = cand
+                break
+
+    if not abs_pdf_path or not os.path.exists(abs_pdf_path):
+        storage_dir = os.environ.get("BOOK_STORAGE_PATH", "C:\\e book")
+        if os.path.exists(storage_dir):
+            for root, _, files in os.walk(storage_dir):
+                for f in files:
+                    if f.lower().endswith(".pdf") and (book.title.lower() in f.lower() or str(id) in f):
+                        abs_pdf_path = os.path.join(root, f)
+                        break
+                if abs_pdf_path:
+                    break
+
+    if not abs_pdf_path or not os.path.exists(abs_pdf_path):
+        raise HTTPException(status_code=404, detail="Physical book file not found on college storage")
+
+    file_size = os.path.getsize(abs_pdf_path)
+    range_header = request.headers.get("range")
+    safe_name = os.path.basename(abs_pdf_path).replace('"', '_')
+
+    headers = {
+        "Accept-Ranges": "bytes",
+        "Content-Type": "application/pdf",
+        "Content-Disposition": f'inline; filename="{safe_name}"',
+        "Cache-Control": "public, max-age=86400"
+    }
+
+    if range_header:
+        range_match = re.match(r"bytes=(\d+)-(\d*)", range_header)
+        if range_match:
+            start = int(range_match.group(1))
+            end = int(range_match.group(2)) if range_match.group(2) else file_size - 1
+            if start < file_size and end < file_size and start <= end:
+                chunk_size = end - start + 1
+                headers["Content-Range"] = f"bytes {start}-{end}/{file_size}"
+                headers["Content-Length"] = str(chunk_size)
+
+                def range_stream():
+                    with open(abs_pdf_path, "rb") as f:
+                        f.seek(start)
+                        bytes_left = chunk_size
+                        while bytes_left > 0:
+                            chunk = f.read(min(bytes_left, 64 * 1024))
+                            if not chunk:
+                                break
+                            bytes_left -= len(chunk)
+                            yield chunk
+
+                return StreamingResponse(range_stream(), status_code=206, headers=headers)
+
+    headers["Content-Length"] = str(file_size)
+
+    def full_stream():
+        with open(abs_pdf_path, "rb") as f:
+            while chunk := f.read(64 * 1024):
+                yield chunk
+
+    return StreamingResponse(full_stream(), status_code=200, headers=headers)
+
+
+@app.get("/api/books/{id}/download")
+async def download_book_file(id: int, db: Session = Depends(get_db)):
+    """
+    Streams book file as attachment download without loading entire file into memory.
+    """
+    book = db.query(Book).filter(Book.id == id).first()
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    abs_pdf_path = None
+    if book.pdf_path:
+        cand1 = os.path.join(STORAGE_DIR, book.pdf_path.lstrip("/").replace("storage/", ""))
+        cand2 = os.path.join(ROOT_DIR, book.pdf_path.lstrip("/"))
+        cand3 = os.path.abspath(book.pdf_path)
+        for cand in [cand1, cand2, cand3]:
+            if os.path.exists(cand) and os.path.isfile(cand):
+                abs_pdf_path = cand
+                break
+
+    if not abs_pdf_path or not os.path.exists(abs_pdf_path):
+        storage_dir = os.environ.get("BOOK_STORAGE_PATH", "C:\\e book")
+        if os.path.exists(storage_dir):
+            for root, _, files in os.walk(storage_dir):
+                for f in files:
+                    if f.lower().endswith(".pdf") and (book.title.lower() in f.lower() or str(id) in f):
+                        abs_pdf_path = os.path.join(root, f)
+                        break
+                if abs_pdf_path:
+                    break
+
+    if not abs_pdf_path or not os.path.exists(abs_pdf_path):
+        raise HTTPException(status_code=404, detail="Physical book file not found on college storage")
+
+    file_size = os.path.getsize(abs_pdf_path)
+    safe_name = os.path.basename(abs_pdf_path).replace('"', '_')
+
+    headers = {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": f'attachment; filename="{safe_name}"',
+        "Content-Length": str(file_size),
+        "Accept-Ranges": "bytes"
+    }
+
+    def file_stream():
+        with open(abs_pdf_path, "rb") as f:
+            while chunk := f.read(64 * 1024):
+                yield chunk
+
+    return StreamingResponse(file_stream(), status_code=200, headers=headers)
 
 
 @app.put("/api/admin/books/{id}")

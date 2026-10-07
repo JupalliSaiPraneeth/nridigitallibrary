@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLibrary } from '../context/LibraryContext.jsx';
-import { X, BookOpen, Bookmark, Edit, Trash2, Layers, ListOrdered, Globe, Star } from 'lucide-react';
+import { X, BookOpen, Bookmark, Edit, Trash2, Layers, ListOrdered, Globe, Star, Download } from 'lucide-react';
+import { API_URL } from '../services/libraryApi.js';
 
 export const BookDetailsModal = () => {
   const {
@@ -163,6 +164,17 @@ export const BookDetailsModal = () => {
                 <Bookmark size={18} fill={saved ? 'currentColor' : 'none'} />
                 <span>{saved ? 'In My Bookshelf' : 'Save to Bookshelf'}</span>
               </button>
+
+              <a
+                href={selectedBook.downloadUrl || `${API_URL}/api/books/${selectedBook.id}/download`}
+                download
+                className="btn btn-secondary"
+                style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                title="Download Original PDF from College Server Storage"
+              >
+                <Download size={18} />
+                <span>Download PDF</span>
+              </a>
 
               {user?.role === 'admin' && (
                 <div style={{ display: 'flex', gap: '8px' }}>

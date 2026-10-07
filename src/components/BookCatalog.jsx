@@ -7,6 +7,7 @@ export const BookCatalog = () => {
   const {
     filteredBooks,
     loading,
+    error,
     currentDept,
     setCurrentDept,
     sortBy,
@@ -80,6 +81,24 @@ export const BookCatalog = () => {
             <RefreshCw className={`icon-sm ${loading ? 'spin' : ''}`} />
           </button>
         </div>
+
+        {error && (
+          <div style={{
+            margin: '16px 0',
+            padding: '12px 18px',
+            background: 'rgba(237, 107, 16, 0.12)',
+            border: '1px solid rgba(237, 107, 16, 0.25)',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            fontSize: '0.88rem',
+            color: 'var(--text-main)'
+          }}>
+            <span style={{ fontSize: '1.1rem' }}>ℹ️</span>
+            <span>{error}</span>
+          </div>
+        )}
 
         {loading ? (
           <div className="catalog-loading-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '24px', padding: '24px 0' }}>
