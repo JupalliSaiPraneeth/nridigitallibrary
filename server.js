@@ -181,33 +181,19 @@ const allowedOrigins = rawAllowed.split(',').map(s => s.trim()).filter(Boolean);
 app.use((req, res, next) => {
   const origin = req.headers.origin;
 
-  let isAllowed = false;
-  if (!origin || allowedOrigins.includes('*')) {
-    isAllowed = true;
-  } else {
-    isAllowed = allowedOrigins.some(allowed => {
-      if (allowed === origin) return true;
-      if (allowed.startsWith('*.') && origin) {
-        const domain = allowed.slice(2);
-        return origin.endsWith(domain);
-      }
-      if (allowed.includes('.vercel.app') && origin.endsWith('.vercel.app')) {
-        return true;
-      }
-      return false;
-    });
-  }
-
-  if (isAllowed && origin) {
+  // Allow origin: reflect requested origin or allow all for student / cross-device access
+  if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
-  } else if (allowedOrigins.includes('*')) {
+  } else {
     res.setHeader('Access-Control-Allow-Origin', '*');
   }
 
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, HEAD');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Range, If-Range, X-Requested-With');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Range, If-Range, X-Requested-With, Access-Control-Request-Private-Network');
   res.setHeader('Access-Control-Expose-Headers', 'Content-Range, Accept-Ranges, Content-Length, Content-Disposition');
+  // W3C Private Network Access (PNA) header - allows HTTPS (Vercel) to call private network IP on Chrome/MacBook
+  res.setHeader('Access-Control-Allow-Private-Network', 'true');
   res.removeHeader('X-Frame-Options');
 
   if (req.method === 'OPTIONS') {
@@ -634,6 +620,7 @@ app.use('/books', (req, res, next) => {
   express.static(currentBooksDir, {
     setHeaders: (resHeader, filePath) => {
       resHeader.setHeader('Access-Control-Allow-Origin', '*');
+      resHeader.setHeader('Access-Control-Allow-Private-Network', 'true');
       resHeader.setHeader('Accept-Ranges', 'bytes');
       if (filePath.endsWith('.pdf')) {
         resHeader.setHeader('Content-Type', 'application/pdf');
