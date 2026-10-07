@@ -33,9 +33,6 @@ export const Hero = () => {
 
   return (
     <section className="hero" id="hero">
-      <div className="hero-glow-1"></div>
-      <div className="hero-glow-2"></div>
-
       <div className="container hero-grid">
         <div className="hero-content" style={{ width: '100%' }}>
           <h1 className="hero-title" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, marginBottom: '6px', color: 'var(--text-main)', lineHeight: 1.2 }}>
