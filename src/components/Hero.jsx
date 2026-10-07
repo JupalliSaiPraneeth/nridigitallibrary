@@ -38,16 +38,11 @@ export const Hero = () => {
 
       <div className="container hero-grid">
         <div className="hero-content" style={{ width: '100%' }}>
-          <div className="hero-badge" style={{ marginBottom: '16px', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '50px', background: 'rgba(237, 107, 16, 0.1)', border: '1px solid rgba(237, 107, 16, 0.25)', fontSize: '0.82rem', fontWeight: 600, color: 'var(--accent-orange-bright)' }}>
-            <Sparkles className="icon-xs text-orange" />
-            <span>Accredited NAAC A+ Grade E-Library Portal</span>
-          </div>
-
-          <h1 className="hero-title" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, marginBottom: '12px', color: 'var(--text-main)', lineHeight: 1.2 }}>
+          <h1 className="hero-title" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 800, marginBottom: '6px', color: 'var(--text-main)', lineHeight: 1.2 }}>
             Explore Academic Textbooks, Research & E-Books
           </h1>
 
-          <p className="hero-subtitle" style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '28px', maxWidth: '720px' }}>
+          <p className="hero-subtitle" style={{ fontSize: 'clamp(0.85rem, 1.3vw, 1.02rem)', color: 'var(--text-muted)', marginBottom: '14px', maxWidth: 'none', width: '100%', whiteSpace: 'nowrap' }}>
             Access high-resolution digital textbooks, curriculum laboratory manuals, and peer-reviewed journals 24/7.
           </p>
 

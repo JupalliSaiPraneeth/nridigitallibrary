@@ -1128,7 +1128,7 @@
     /* Hero Section */
     .hero {
       position: relative;
-      padding: 14px 0 6px 0;
+      padding: 4px 0 2px 0;
       overflow: hidden;
     }
 
@@ -1230,10 +1230,12 @@
     }
 
     .hero-subtitle {
-      font-size: 1.12rem;
+      font-size: clamp(0.84rem, 1.3vw, 1.02rem);
       color: var(--text-muted);
-      margin: 0 auto 36px auto;
-      max-width: 700px;
+      margin: 0 auto 10px auto;
+      max-width: none;
+      width: 100%;
+      white-space: nowrap;
       font-weight: 400;
       text-align: center;
     }
@@ -1250,7 +1252,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
@@ -1346,7 +1348,7 @@
 
     /* Section Styling */
     .section {
-      padding: 12px 0 16px 0;
+      padding: 4px 0 8px 0;
       position: relative;
     }
 
@@ -1354,9 +1356,9 @@
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
 
     .section-subtitle {
@@ -1385,8 +1387,8 @@
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      gap: 18px;
-      margin-bottom: 14px;
+      gap: 16px;
+      margin-bottom: 6px;
       flex-wrap: wrap;
       background: transparent !important;
       background-color: transparent !important;
@@ -6104,7 +6106,7 @@
       background-color: transparent !important;
       border-top: none !important;
       border: none !important;
-      padding: 20px 0 12px 0;
+      padding: 10px 0 8px 0;
       position: relative;
     }
 
