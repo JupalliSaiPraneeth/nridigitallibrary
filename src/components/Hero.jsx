@@ -39,7 +39,7 @@ export const Hero = () => {
 
   return (
     <section className="hero" id="hero">
-      {/* Campus Photo Backdrop on Right Side */}
+      {/* Campus Photo Backdrop on Right Side (Iconic Building & Facade) */}
       <div className="hero-campus-backdrop" aria-hidden="true">
         <img
           src="/college.webp"
@@ -163,4 +163,3 @@ export const Hero = () => {
     </section>
   );
 };
-
