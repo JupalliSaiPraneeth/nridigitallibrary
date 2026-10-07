@@ -3,9 +3,6 @@ import { useLibrary } from '../context/LibraryContext.jsx';
 import {
   Search,
   X,
-  BookOpen,
-  FileText,
-  GraduationCap,
   ChevronDown
 } from 'lucide-react';
 
@@ -36,18 +33,19 @@ export const Hero = () => {
   return (
     <section className="nri-hero-section" id="hero">
       <div className="container nri-hero-container">
-        {/* Main Hero Card with Campus Background */}
+        {/* Main Hero Card with Campus Background focused to right side */}
         <div className="nri-hero-banner-card">
-          {/* Background Image: college.png */}
-          <div
-            className="nri-hero-bg-layer"
-            style={{ backgroundImage: "url('/college.png')" }}
-          >
-            {/* Gradient Overlay for crystal clear typography on the left */}
-            <div className="nri-hero-gradient-overlay"></div>
+          {/* Background Layer with photo focused strictly to right side */}
+          <div className="nri-hero-bg-layer">
+            <div
+              className="nri-hero-photo-right"
+              style={{ backgroundImage: "url('/college.png')" }}
+            >
+              <div className="nri-hero-gradient-overlay"></div>
+            </div>
           </div>
 
-          {/* Left Text & Stats Content */}
+          {/* Left Text Content (Clean, elegant, no distracting badges) */}
           <div className="nri-hero-text-content">
             <h1 className="nri-hero-main-title">
               Explore Academic Textbooks,<br />
@@ -58,39 +56,6 @@ export const Hero = () => {
               Access high-resolution digital textbooks, curriculum laboratory manuals,<br className="hide-mobile" />
               research publications and peer-reviewed journals 24/7.
             </p>
-
-            {/* 3 Metric Badges */}
-            <div className="nri-hero-metrics-row">
-              <div className="nri-metric-badge">
-                <div className="nri-metric-icon-wrap">
-                  <BookOpen className="nri-metric-icon" />
-                </div>
-                <div className="nri-metric-labels">
-                  <span className="nri-metric-number">25K+</span>
-                  <span className="nri-metric-title">E-Books</span>
-                </div>
-              </div>
-
-              <div className="nri-metric-badge">
-                <div className="nri-metric-icon-wrap">
-                  <FileText className="nri-metric-icon" />
-                </div>
-                <div className="nri-metric-labels">
-                  <span className="nri-metric-number">5K+</span>
-                  <span className="nri-metric-title">Research Papers</span>
-                </div>
-              </div>
-
-              <div className="nri-metric-badge">
-                <div className="nri-metric-icon-wrap">
-                  <GraduationCap className="nri-metric-icon" />
-                </div>
-                <div className="nri-metric-labels">
-                  <span className="nri-metric-number">20+</span>
-                  <span className="nri-metric-title">Departments</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Floating Search Bar (Anchored at the bottom) */}

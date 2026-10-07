@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import { useLibrary } from '../context/LibraryContext.jsx';
 import {
-  Home,
-  LayoutGrid,
-  Layers,
-  Compass,
   Bookmark,
   Sun,
   Moon,
-  Bell,
   User,
   Upload,
   Menu,
@@ -23,12 +18,10 @@ export const Navbar = () => {
     user,
     logout,
     setActiveModal,
-    setCurrentDept,
-    setCurrentType
+    setCurrentDept
   } = useLibrary();
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('home');
 
   const logoSrc = theme === 'dark' ? '/nridark-removebg-preview.png' : '/nrilogo.png';
 
@@ -47,23 +40,6 @@ export const Navbar = () => {
     setMobileNavOpen(false);
   };
 
-  const handleNavClick = (tabId, targetElId, deptId, typeId) => {
-    setActiveTab(tabId);
-    setMobileNavOpen(false);
-
-    if (deptId) setCurrentDept(deptId);
-    if (typeId) setCurrentType(typeId);
-
-    if (targetElId === 'top') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      const el = document.getElementById(targetElId);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
-
   return (
     <header className="header top-navbar">
       <div id="progressBar" className="reading-progress-bar"></div>
@@ -75,7 +51,8 @@ export const Navbar = () => {
           className="brand"
           onClick={(e) => {
             e.preventDefault();
-            handleNavClick('home', 'top', 'all');
+            setCurrentDept('all');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         >
           <img src={logoSrc} alt="DR. RVR NRI Logo" className="brand-logo-img" />
@@ -85,59 +62,7 @@ export const Navbar = () => {
           </div>
         </a>
 
-        {/* Center Navigation Links */}
-        <nav className="nav-center-menu">
-          <button
-            type="button"
-            className={`nav-menu-item ${activeTab === 'home' ? 'active' : ''}`}
-            onClick={() => handleNavClick('home', 'top')}
-          >
-            <Home className="icon-xs" />
-            <span>Home</span>
-          </button>
-
-          <button
-            type="button"
-            className={`nav-menu-item ${activeTab === 'browse' ? 'active' : ''}`}
-            onClick={() => handleNavClick('browse', 'catalog')}
-          >
-            <LayoutGrid className="icon-xs" />
-            <span>Browse</span>
-          </button>
-
-          <button
-            type="button"
-            className={`nav-menu-item ${activeTab === 'departments' ? 'active' : ''}`}
-            onClick={() => handleNavClick('departments', 'catalog')}
-          >
-            <Layers className="icon-xs" />
-            <span>Departments</span>
-          </button>
-
-          <button
-            type="button"
-            className={`nav-menu-item ${activeTab === 'research' ? 'active' : ''}`}
-            onClick={() => handleNavClick('research', 'catalog', null, 'journal')}
-          >
-            <Compass className="icon-xs" />
-            <span>Research</span>
-          </button>
-
-          <button
-            type="button"
-            className={`nav-menu-item ${activeTab === 'shelf' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('shelf');
-              handleOpenShelf();
-            }}
-          >
-            <Bookmark className="icon-xs" />
-            <span>My Library</span>
-            {shelf.length > 0 && <span className="nav-shelf-pill">{shelf.length}</span>}
-          </button>
-        </nav>
-
-        {/* Action Buttons (FAR RIGHT) */}
+        {/* Action Buttons (FAR RIGHT - Center links & notification bell removed as requested) */}
         <div className="nav-actions">
           {/* Theme Toggle Button */}
           <button
@@ -148,26 +73,23 @@ export const Navbar = () => {
             {theme === 'dark' ? <Sun className="icon-sm text-amber" /> : <Moon className="icon-sm" />}
           </button>
 
-          {/* Notification Bell */}
-          <button
-            className="btn-icon nav-tool-btn nav-bell-btn"
-            title="Library Notifications & Announcements"
-            onClick={() => {
-              const el = document.getElementById('catalog');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            <Bell className="icon-sm" />
-            <span className="bell-badge-count">0</span>
-          </button>
-
           {/* AI Ingest Button (Admin/Faculty) */}
           <button
-            className="btn-icon nav-tool-btn nav-ingest-quick-btn"
+            className="btn-icon nav-tool-btn"
             onClick={handleOpenIngest}
             title="AI Ingest & Book Management"
           >
             <Upload className="icon-sm text-orange" />
+          </button>
+
+          {/* My Saved Bookshelf */}
+          <button
+            className="btn-icon nav-tool-btn"
+            onClick={handleOpenShelf}
+            title="My Saved Library Books"
+          >
+            <Bookmark className="icon-sm" />
+            {shelf.length > 0 && <span className="bell-badge-count">{shelf.length}</span>}
           </button>
 
           {/* Login Button (Solid Orange) */}
@@ -203,38 +125,6 @@ export const Navbar = () => {
               <button className="btn-close" onClick={() => setMobileNavOpen(false)}><X /></button>
             </div>
             <div className="mobile-nav-links">
-              <button
-                className={`mobile-nav-item ${activeTab === 'home' ? 'active' : ''}`}
-                onClick={() => handleNavClick('home', 'top')}
-              >
-                <Home className="icon-sm text-orange" />
-                <span>Home</span>
-              </button>
-
-              <button
-                className="mobile-nav-item"
-                onClick={() => handleNavClick('browse', 'catalog')}
-              >
-                <LayoutGrid className="icon-sm" />
-                <span>Browse All Books</span>
-              </button>
-
-              <button
-                className="mobile-nav-item"
-                onClick={() => handleNavClick('departments', 'catalog')}
-              >
-                <Layers className="icon-sm" />
-                <span>Academic Departments</span>
-              </button>
-
-              <button
-                className="mobile-nav-item"
-                onClick={() => handleNavClick('research', 'catalog', null, 'journal')}
-              >
-                <Compass className="icon-sm" />
-                <span>Research Publications</span>
-              </button>
-
               <button className="mobile-nav-item" onClick={handleOpenShelf}>
                 <Bookmark className="icon-sm" />
                 <span>My Library Shelf ({shelf.length})</span>
