@@ -5,6 +5,7 @@ import { SlidersHorizontal, ArrowUpDown, RefreshCw, SearchX } from 'lucide-react
 
 export const BookCatalog = () => {
   const {
+    books,
     filteredBooks,
     loading,
     error,
@@ -115,19 +116,34 @@ export const BookCatalog = () => {
         ) : (
           <div className="empty-catalog-state" style={{ textAlign: 'center', padding: '60px 20px' }}>
             <SearchX className="empty-icon text-orange" style={{ width: '64px', height: '64px', margin: '0 auto 16px auto', display: 'block' }} />
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '8px' }}>No E-Books Found</h3>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '8px' }}>
+              {!books || books.length === 0 ? 'No books are available!' : 'No E-Books Found'}
+            </h3>
             <p style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>
-              Try adjusting your search keywords or department filters.
+              {!books || books.length === 0
+                ? 'No digital books are currently available in the storage repository.'
+                : 'Try adjusting your search keywords or department filters.'}
             </p>
-            <button
-              className="btn-secondary"
-              onClick={() => {
-                setSearchQuery('');
-                setCurrentDept('all');
-              }}
-            >
-              Reset Filters
-            </button>
+            {books && books.length > 0 ? (
+              <button
+                className="btn-secondary"
+                onClick={() => {
+                  setSearchQuery('');
+                  setCurrentDept('all');
+                }}
+              >
+                Reset Filters
+              </button>
+            ) : (
+              <button
+                className="btn-primary"
+                onClick={reloadBooks}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', margin: '0 auto' }}
+              >
+                <RefreshCw size={16} />
+                <span>Reload Books</span>
+              </button>
+            )}
           </div>
         )}
       </div>
