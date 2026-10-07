@@ -1224,13 +1224,13 @@
       border: none;
     }
 
-    /* Photo anchored to the right edge (extended width up to the marked text boundary) */
+    /* Photo anchored to the right edge (balanced width) */
     .full-bleed-hero .nri-hero-photo-right {
       position: absolute;
       top: 0;
       bottom: 0;
       right: 0;
-      width: 66%;
+      width: 61.5%;
       background-size: cover;
       background-position: right center;
       background-repeat: no-repeat;
@@ -1250,9 +1250,9 @@
       background: linear-gradient(
         90deg,
         var(--bg-secondary) 0%,
-        rgba(255, 255, 255, 0.95) 8%,
-        rgba(255, 255, 255, 0.45) 18%,
-        rgba(255, 255, 255, 0) 30%
+        rgba(255, 255, 255, 0.95) 10%,
+        rgba(255, 255, 255, 0.48) 22%,
+        rgba(255, 255, 255, 0) 36%
       );
     }
 
@@ -1260,9 +1260,9 @@
       background: linear-gradient(
         90deg,
         var(--bg-secondary) 0%,
-        rgba(15, 17, 24, 0.95) 8%,
-        rgba(15, 17, 24, 0.45) 18%,
-        rgba(15, 17, 24, 0) 30%
+        rgba(15, 17, 24, 0.95) 10%,
+        rgba(15, 17, 24, 0.48) 22%,
+        rgba(15, 17, 24, 0) 36%
       );
     }
 
