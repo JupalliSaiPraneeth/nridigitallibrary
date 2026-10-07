@@ -31,83 +31,81 @@ export const Hero = () => {
   };
 
   return (
-    <section className="nri-hero-section" id="hero">
-      <div className="container nri-hero-container">
-        {/* Main Hero Card with Campus Background focused to right side */}
-        <div className="nri-hero-banner-card">
-          {/* Background Layer with photo focused strictly to right side */}
-          <div className="nri-hero-bg-layer">
-            <div
-              className="nri-hero-photo-right"
-              style={{ backgroundImage: "url('/college.png')" }}
-            >
-              <div className="nri-hero-gradient-overlay"></div>
-            </div>
-          </div>
+    <section className="nri-hero-section full-bleed-hero" id="hero">
+      {/* Background layer covering 100% edge-to-edge screen width */}
+      <div className="nri-hero-bg-layer">
+        <div
+          className="nri-hero-photo-right"
+          style={{ backgroundImage: "url('/college.png')" }}
+        >
+          <div className="nri-hero-gradient-overlay"></div>
+        </div>
+      </div>
 
-          {/* Left Text Content (Clean, elegant, no distracting badges) */}
-          <div className="nri-hero-text-content">
-            <h1 className="nri-hero-main-title">
-              Explore Academic Textbooks,<br />
-              Research & <span className="nri-highlight-orange">E-Books</span>
-            </h1>
+      {/* Inner Container aligning typography and search bar with the page grid */}
+      <div className="container nri-hero-content-wrap">
+        {/* Left Text Content */}
+        <div className="nri-hero-text-content">
+          <h1 className="nri-hero-main-title">
+            Explore Academic Textbooks,<br />
+            Research & <span className="nri-highlight-orange">E-Books</span>
+          </h1>
 
-            <p className="nri-hero-main-subtitle">
-              Access high-resolution digital textbooks, curriculum laboratory manuals,<br className="hide-mobile" />
-              research publications and peer-reviewed journals 24/7.
-            </p>
-          </div>
+          <p className="nri-hero-main-subtitle">
+            Access high-resolution digital textbooks, curriculum laboratory manuals,<br className="hide-mobile" />
+            research publications and peer-reviewed journals 24/7.
+          </p>
+        </div>
 
-          {/* Floating Search Bar (Anchored at the bottom) */}
-          <div className="nri-floating-search-bar">
-            <div className="nri-search-field-left">
-              <Search className="nri-search-lead-icon" />
-              <input
-                type="text"
-                className="nri-search-text-input"
-                placeholder="Search by title, author, ISBN, subject or keyword..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleSearchSubmit();
-                }}
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  className="nri-search-clear-btn"
-                  onClick={() => setSearchQuery('')}
-                  title="Clear input"
-                >
-                  <X className="icon-xs" />
-                </button>
-              )}
-            </div>
-
-            <div className="nri-search-vertical-divider"></div>
-
-            <div className="nri-search-dept-wrapper">
-              <select
-                className="nri-search-dept-dropdown"
-                value={currentDept}
-                onChange={(e) => setCurrentDept(e.target.value)}
+        {/* Floating Search Bar */}
+        <div className="nri-floating-search-bar">
+          <div className="nri-search-field-left">
+            <Search className="nri-search-lead-icon" />
+            <input
+              type="text"
+              className="nri-search-text-input"
+              placeholder="Search by title, author, ISBN, subject or keyword..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSearchSubmit();
+              }}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className="nri-search-clear-btn"
+                onClick={() => setSearchQuery('')}
+                title="Clear input"
               >
-                {departments.map((d) => (
-                  <option key={d.id} value={d.id}>{d.label}</option>
-                ))}
-              </select>
-              <ChevronDown className="nri-search-dept-arrow" />
-            </div>
-
-            <button
-              type="button"
-              className="nri-search-action-btn"
-              onClick={handleSearchSubmit}
-            >
-              <Search className="nri-search-btn-icon" />
-              <span>Search</span>
-            </button>
+                <X className="icon-xs" />
+              </button>
+            )}
           </div>
+
+          <div className="nri-search-vertical-divider"></div>
+
+          <div className="nri-search-dept-wrapper">
+            <select
+              className="nri-search-dept-dropdown"
+              value={currentDept}
+              onChange={(e) => setCurrentDept(e.target.value)}
+            >
+              {departments.map((d) => (
+                <option key={d.id} value={d.id}>{d.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="nri-search-dept-arrow" />
+          </div>
+
+          <button
+            type="button"
+            className="nri-search-action-btn"
+            onClick={handleSearchSubmit}
+          >
+            <Search className="nri-search-btn-icon" />
+            <span>Search</span>
+          </button>
         </div>
       </div>
     </section>

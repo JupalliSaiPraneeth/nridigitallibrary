@@ -1197,96 +1197,96 @@
     /* =========================================================
        NRI DIGITAL LIBRARY - SIGNATURE HERO BANNER WITH CAMPUS
        ========================================================= */
-    .nri-hero-section {
-      width: 100%;
-      padding: 12px 0 32px 0;
-      position: relative;
-    }
-
-    .nri-hero-container {
-      width: 100%;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 28px;
-    }
-
-    .nri-hero-banner-card {
+    /* =========================================================
+       NRI DIGITAL LIBRARY - FULL-BLEED SIGNATURE HERO BANNER
+       ========================================================= */
+    .nri-hero-section.full-bleed-hero {
       position: relative;
       width: 100%;
-      min-height: 380px;
-      border-radius: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      min-height: 420px;
+      margin: 0;
+      padding: 0;
       background: var(--bg-secondary);
-      border: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+      overflow: visible;
     }
 
-    /* Background Layer with photo focused strictly to the right side */
-    .nri-hero-bg-layer {
+    /* Edge-to-Edge Background Layer */
+    .full-bleed-hero .nri-hero-bg-layer {
       position: absolute;
       inset: 0;
-      border-radius: 20px;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
       z-index: 1;
       pointer-events: none;
+      border-radius: 0;
+      border: none;
     }
 
-    .nri-hero-photo-right {
+    /* Photo anchored to the right edge (bleeding edge-to-edge) */
+    .full-bleed-hero .nri-hero-photo-right {
       position: absolute;
       top: 0;
       bottom: 0;
       right: 0;
-      width: 60%;
+      width: 58%;
       background-size: cover;
       background-position: right center;
       background-repeat: no-repeat;
     }
 
     @media (max-width: 900px) {
-      .nri-hero-photo-right {
+      .full-bleed-hero .nri-hero-photo-right {
         width: 100%;
         opacity: 0.22;
       }
     }
 
     /* Seamless Fade into Left Solid Background */
-    .nri-hero-gradient-overlay {
+    .full-bleed-hero .nri-hero-gradient-overlay {
       position: absolute;
       inset: 0;
       background: linear-gradient(
         90deg,
         var(--bg-secondary) 0%,
-        var(--bg-secondary) 12%,
-        rgba(255, 255, 255, 0.72) 35%,
-        rgba(255, 255, 255, 0) 70%
+        var(--bg-secondary) 18%,
+        rgba(255, 255, 255, 0.72) 42%,
+        rgba(255, 255, 255, 0) 75%
       );
     }
 
-    [data-theme="dark"] .nri-hero-gradient-overlay {
+    [data-theme="dark"] .full-bleed-hero .nri-hero-gradient-overlay {
       background: linear-gradient(
         90deg,
         var(--bg-secondary) 0%,
-        var(--bg-secondary) 12%,
-        rgba(15, 17, 24, 0.78) 35%,
-        rgba(15, 17, 24, 0) 70%
+        var(--bg-secondary) 18%,
+        rgba(15, 17, 24, 0.78) 42%,
+        rgba(15, 17, 24, 0) 75%
       );
     }
 
-    /* Text Content Layer */
-    .nri-hero-text-content {
+    /* Inner Container aligning content with page grid */
+    .nri-hero-content-wrap {
       position: relative;
       z-index: 3;
-      padding: 56px 48px 24px 48px;
-      max-width: 680px;
+      padding: 54px 36px 44px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 420px;
     }
 
     @media (max-width: 768px) {
-      .nri-hero-text-content {
-        padding: 36px 20px 20px 20px;
-        max-width: 100%;
+      .nri-hero-content-wrap {
+        padding: 36px 20px 32px 20px;
       }
+    }
+
+    /* Text Content */
+    .full-bleed-hero .nri-hero-text-content {
+      max-width: 680px;
+      margin-bottom: 32px;
     }
 
     .nri-hero-main-title {
@@ -1308,7 +1308,7 @@
       font-size: clamp(0.92rem, 1.25vw, 1.05rem);
       color: var(--text-muted);
       line-height: 1.6;
-      margin-bottom: 24px;
+      margin-bottom: 0;
       font-weight: 450;
     }
 
@@ -1317,11 +1317,15 @@
         display: none;
       }
     }
+
     /* Floating Search Bar (Anchored at bottom of banner) */
     .nri-floating-search-bar {
       position: relative;
       z-index: 5;
-      margin: 0 48px -24px 48px;
+      margin: 0;
+      max-width: 980px;
+      width: 100%;
+      margin-bottom: -24px;
       background: #ffffff;
       border: 1px solid rgba(0, 0, 0, 0.08);
       border-radius: 12px;
