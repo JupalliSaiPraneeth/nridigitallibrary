@@ -179,11 +179,19 @@ export async function getBooks() {
     window.location.hostname === '192.168.0.4'
   );
 
+  const CLOUDFLARE_TUNNEL_FALLBACK = 'https://nova-university-lisa-assets.trycloudflare.com';
+
   // Candidate order:
   let candidateUrls = [];
   if (isHttps) {
-    // Production Vercel HTTPS environment - strictly use HTTPS configured domain
-    candidateUrls = [activeApiUrl];
+    // Production Vercel HTTPS environment:
+    // Safari on macOS strictly blocks HTTP subresources from HTTPS pages (Mixed Content).
+    // Prioritize HTTPS endpoints so Safari on MacBook Neo loads books reliably.
+    if (activeApiUrl && activeApiUrl.startsWith('https://')) {
+      candidateUrls = [activeApiUrl, CLOUDFLARE_TUNNEL_FALLBACK];
+    } else {
+      candidateUrls = [CLOUDFLARE_TUNNEL_FALLBACK, activeApiUrl, 'http://192.168.0.4:8000'];
+    }
   } else if (isLocalhost) {
     // In local development, probe local running instances first
     const localPorts = [
