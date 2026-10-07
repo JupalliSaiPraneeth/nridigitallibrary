@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLibrary } from "../context/LibraryContext.jsx";
+import { generateRichChapters } from "../utils/chapterGenerator.js";
 
 export const BookReader = ({
   book,
@@ -19,12 +20,17 @@ export const BookReader = ({
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
 
   const pdfSource = book?.pdfUrl || book?.pdf || book?.file || book?.pdf_path;
-  
+  const [pdfCurrentUrl, setPdfCurrentUrl] = useState(pdfSource);
+
   // State for toggling between PDF iframe and Rich Interactive HTML Chapters
   const [usePdfView, setUsePdfView] = useState(Boolean(pdfSource));
   const [pdfLoadError, setPdfLoadError] = useState(false);
 
-  const chapters = book?.chapters || [];
+  const rawChapters = (Array.isArray(book?.chapters) && book.chapters.length > 0)
+    ? book.chapters
+    : generateRichChapters(book?.title || "Academic Course Material", book?.dept || "CSE");
+  const chapters = rawChapters;
+
   const activeChapter = chapters[currentChapterIndex] || {
     title: book?.title || "Academic Chapter",
     content: `<div class="reader-chapter-title">${book?.title || 'Academic Volume'}</div><p>${book?.desc || book?.description || 'Full interactive academic reader volume loaded.'}</p>`
@@ -32,8 +38,19 @@ export const BookReader = ({
 
   useEffect(() => {
     setUsePdfView(Boolean(pdfSource));
+    setPdfCurrentUrl(pdfSource);
     setPdfLoadError(false);
   }, [book, pdfSource]);
+
+  const navigateToChapter = (idx) => {
+    setCurrentChapterIndex(idx);
+    const targetChapter = chapters[idx];
+    if (targetChapter && pdfSource) {
+      const pageNum = targetChapter.start_page || targetChapter.pageStart || (idx * 25 + 1);
+      const cleanBase = pdfSource.split('#')[0];
+      setPdfCurrentUrl(`${cleanBase}#page=${pageNum}`);
+    }
+  };
 
   /*
    * ============================================================
@@ -286,24 +303,6 @@ export const BookReader = ({
 
           <div className="reader-toolbar">
 
-            {/* VIEW MODE SWITCHER (PDF vs INTERACTIVE CHAPTERS) */}
-            <button
-              className="reader-tool-btn"
-              title="Switch between PDF Document View and Interactive Chapter View"
-              onClick={() => {
-                setUsePdfView(prev => !prev);
-                setPdfLoadError(false);
-              }}
-              style={{
-                background: usePdfView ? 'rgba(237, 107, 16, 0.15)' : 'var(--bg-card)',
-                color: usePdfView ? 'var(--accent-orange-bright)' : 'var(--text-main)',
-                border: '1px solid var(--accent-orange)',
-                fontWeight: 700
-              }}
-            >
-              {usePdfView ? '📖 Switch to Interactive Chapter View' : '📄 Switch to PDF View'}
-            </button>
-
             {/* SEARCH */}
 
             <div
@@ -500,7 +499,8 @@ export const BookReader = ({
                 }}
                 value={currentChapterIndex}
                 onChange={(event) => {
-                  setCurrentChapterIndex(Number(event.target.value));
+                  const idx = Number(event.target.value);
+                  navigateToChapter(idx);
                 }}
               >
                 {chapters.map((ch, idx) => (
@@ -587,8 +587,9 @@ export const BookReader = ({
         ======================================================= */}
 
         <div
-          className="reader-body-layout"
+          className={`reader-body-layout ${tocOpen ? "toc-drawer-open" : ""}`}
           id="readerBodyLayout"
+          style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}
         >
 
           {/* TOC BACKDROP */}
@@ -599,6 +600,16 @@ export const BookReader = ({
             }`}
             id="readerTocBackdrop"
             onClick={closeReaderTocDrawer}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.45)',
+              zIndex: 9999,
+              display: tocOpen ? 'block' : 'none',
+              opacity: tocOpen ? 1 : 0,
+              pointerEvents: tocOpen ? 'auto' : 'none',
+              transition: 'opacity 0.25s ease'
+            }}
           />
 
 
@@ -608,9 +619,27 @@ export const BookReader = ({
 
           <div
             className={`reader-toc-sidebar ${
-              tocOpen ? "active" : ""
+              tocOpen ? "active toc-drawer-open" : ""
             }`}
             id="readerTocSidebar"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: 'min(360px, 85vw)',
+              height: '100%',
+              zIndex: 10000,
+              background: readerTheme === 'dark' ? '#0f172a' : (readerTheme === 'sepia' ? '#f3e5ca' : '#ffffff'),
+              borderRight: '1px solid var(--border-light)',
+              transform: tocOpen ? 'translateX(0)' : 'translateX(-105%)',
+              visibility: tocOpen ? 'visible' : 'hidden',
+              pointerEvents: tocOpen ? 'auto' : 'none',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: '10px 0 35px rgba(0, 0, 0, 0.35)',
+              transition: 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+              overflowY: 'hidden'
+            }}
           >
 
             {/* SIDEBAR TABS */}
@@ -667,33 +696,57 @@ export const BookReader = ({
             {/* TOC LIST */}
 
             {sidebarTab === "toc" && (
-              <div id="tocItemList" style={{ padding: '12px', overflowY: 'auto' }}>
-                {chapters.map((ch, idx) => (
-                  <div
-                    key={idx}
-                    className={`toc-item ${currentChapterIndex === idx ? 'active' : ''}`}
-                    style={{
-                      padding: '10px 14px',
-                      marginBottom: '6px',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      justify: 'space-between',
-                      alignItems: 'center',
-                      background: currentChapterIndex === idx ? 'rgba(237, 107, 16, 0.12)' : 'var(--bg-card)',
-                      border: currentChapterIndex === idx ? '1px solid var(--accent-orange)' : '1px solid var(--border-light)',
-                      color: currentChapterIndex === idx ? 'var(--accent-orange-bright)' : 'var(--text-main)',
-                      fontWeight: currentChapterIndex === idx ? 700 : 500
-                    }}
-                    onClick={() => {
-                      setCurrentChapterIndex(idx);
-                      if (usePdfView) setUsePdfView(false); // Switch to chapter view when a chapter is clicked
-                    }}
-                  >
-                    <span>{idx + 1}. {ch.title}</span>
-                    <span style={{ fontSize: '0.78rem', opacity: 0.8 }}>p. {idx + 1}</span>
-                  </div>
-                ))}
+              <div id="tocItemList" style={{ padding: '14px', overflowY: 'auto', flex: 1 }}>
+                {chapters.map((ch, idx) => {
+                  const pageNum = ch.start_page || ch.pageStart || (idx * 25 + 1);
+                  const isCurrent = currentChapterIndex === idx;
+                  return (
+                    <div
+                      key={idx}
+                      className={`toc-item ${isCurrent ? 'active' : ''}`}
+                      style={{
+                        padding: '12px 14px',
+                        marginBottom: '8px',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        justify: 'space-between',
+                        alignItems: 'center',
+                        background: isCurrent ? 'rgba(237, 107, 16, 0.12)' : 'var(--bg-card)',
+                        border: isCurrent ? '1.5px solid var(--accent-orange)' : '1px solid var(--border-light)',
+                        color: isCurrent ? 'var(--accent-orange-bright)' : 'var(--text-main)',
+                        fontWeight: isCurrent ? 700 : 500,
+                        transition: 'all 0.2s ease'
+                      }}
+                      onClick={() => {
+                        navigateToChapter(idx);
+                        closeReaderTocDrawer();
+                      }}
+                    >
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', paddingRight: '8px' }}>
+                        <span style={{ fontSize: '0.88rem', lineHeight: 1.35 }}>
+                          {ch.title}
+                        </span>
+                        <span style={{ fontSize: '0.74rem', opacity: 0.7 }}>
+                          Chapter {idx + 1}
+                        </span>
+                      </div>
+                      <span
+                        style={{
+                          fontSize: '0.78rem',
+                          padding: '3px 8px',
+                          background: 'rgba(237, 107, 16, 0.15)',
+                          color: 'var(--accent-orange-bright)',
+                          borderRadius: '6px',
+                          fontWeight: 700,
+                          flexShrink: 0
+                        }}
+                      >
+                        p. {pageNum}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             )}
 
@@ -839,7 +892,7 @@ export const BookReader = ({
                   id="readerPdfFrame"
                   title="PDF Document Viewer"
                   frameBorder="0"
-                  src={pdfSource}
+                  src={pdfCurrentUrl || pdfSource}
                   onError={() => {
                     setPdfLoadError(true);
                     setUsePdfView(false);

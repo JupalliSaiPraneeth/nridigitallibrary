@@ -109,7 +109,7 @@ export const BookDetailsModal = () => {
 
           {/* Right Info Column */}
           <div className="book-details-info">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
               <span className="book-details-dept">
                 {selectedBook.category || `${selectedBook.dept} Curriculum`}
               </span>
