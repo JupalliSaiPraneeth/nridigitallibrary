@@ -84,7 +84,11 @@ app.use('/books', (req, res, next) => {
   })(req, res, next);
 });
 
-// Expose static frontend files from project root so devices on LAN/web can open the full web portal
+// Expose static frontend files (prioritize compiled dist output for production deployment)
+const distPath = path.resolve('dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
 app.use(express.static(path.resolve('.')));
 
 // Health check endpoint for monitoring & status verification
@@ -201,8 +205,15 @@ app.get('/api/books/:id', (req, res) => {
   }
 });
 
-// Serve index.html for root path
-app.get('/', (req, res) => {
+// Serve index.html for root path and SPA navigation
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/books')) {
+    return next();
+  }
+  const distIndex = path.resolve('dist', 'index.html');
+  if (fs.existsSync(distIndex)) {
+    return res.sendFile(distIndex);
+  }
   res.sendFile(path.resolve('index.html'));
 });
 
