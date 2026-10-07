@@ -1,8 +1,15 @@
 @echo off
 echo ========================================================
-echo Starting Digital Library Local Laptop Server...
-echo Host: 0.0.0.0, Port: 5001 (http://192.168.56.1:5001)
-echo Serving books from: C:\Users\jupal\Downloads\books
+echo  NRI Digital Library - Laptop Book Server API
+echo ========================================================
+echo  Laptop IP:      192.168.0.4
+echo  Port:           8000
+echo  Local URL:      http://localhost:8000
+echo  Wi-Fi LAN URL:  http://192.168.0.4:8000
+echo  Book Storage:   C:\Users\jupal\Downloads\books
+echo ========================================================
+echo  Health API:     http://192.168.0.4:8000/api/health
+echo  Catalog API:    http://192.168.0.4:8000/api/books
 echo ========================================================
 node server.js
 pause

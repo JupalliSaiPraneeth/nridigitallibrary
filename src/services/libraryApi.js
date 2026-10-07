@@ -1,15 +1,15 @@
 /**
  * Digital Library API Service
- * Secure Gateway for College Server Book Storage (75GB+)
+ * Secure Gateway for Laptop & College Server Book Storage
  */
 
 // Environment Variable: Configurable via Vite (.env) or window override
 export const resolveApiUrl = () => {
-  // 1. Highest priority: Build-time / runtime environment variable (Vercel Production)
+  // 1. Highest priority: Build-time / runtime environment variable (Vercel Production or local .env)
   try {
     if (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_LIBRARY_API_URL) {
       const envVal = import.meta.env.VITE_LIBRARY_API_URL;
-      if (envVal && !envVal.includes("8000")) return envVal.replace(/\/+$/, "");
+      if (envVal) return envVal.replace(/\/+$/, "");
     }
   } catch (e) {}
 
@@ -19,7 +19,7 @@ export const resolveApiUrl = () => {
     // 2. Check localStorage, but ignore stale private LAN IPs if on production HTTPS/Vercel
     try {
       const stored = window.localStorage ? window.localStorage.getItem("VITE_LIBRARY_API_URL") : null;
-      if (stored && !stored.includes("8000")) {
+      if (stored) {
         const isLocalStored = stored.includes("localhost") || stored.includes("127.0.0.1") || stored.includes("192.168.") || stored.includes("172.11.");
         if (!isVercel || !isLocalStored) {
           return stored.replace(/\/+$/, "");
@@ -28,22 +28,25 @@ export const resolveApiUrl = () => {
     } catch (e) {}
 
     // 3. Window globals
-    if (window.VITE_LIBRARY_API_URL && !window.VITE_LIBRARY_API_URL.includes("8000")) {
+    if (window.VITE_LIBRARY_API_URL) {
       return window.VITE_LIBRARY_API_URL.replace(/\/+$/, "");
     }
-    if (window.LIBRARY_API_URL && !window.LIBRARY_API_URL.includes("8000")) {
+    if (window.LIBRARY_API_URL) {
       return window.LIBRARY_API_URL.replace(/\/+$/, "");
     }
 
-    // 4. Localhost dev server
+    // 4. Localhost or Local Wi-Fi Network dev server
     const hostname = window.location.hostname;
     const port = window.location.port;
     if (hostname === "localhost" || hostname === "127.0.0.1") {
-      return (port === "5000" || port === "5001" || port === "5002") ? window.location.origin : "http://localhost:5002";
+      return (port === "8000" || port === "5000" || port === "5002") ? window.location.origin : "http://localhost:8000";
+    }
+    if (hostname === "192.168.0.4") {
+      return (port === "8000") ? window.location.origin : "http://192.168.0.4:8000";
     }
   }
 
-  return "http://localhost:5002";
+  return "http://localhost:8000";
 };
 
 export const API_URL = resolveApiUrl();
@@ -119,7 +122,7 @@ export function mapBookToFrontendModel(book, customApiUrl) {
   }
 
   const pageCount = book.total_pages || book.pagesCount || 100;
-  const description = book.description || book.desc || book.short_description || `Authentic academic volume on ${book.title || "course curriculum"} hosted on digital library server.`;
+  const description = book.description || book.desc || book.short_description || `Official volume on ${book.title || "course curriculum"} hosted on digital library server.`;
   const shortDesc = book.short_description || book.desc || description;
 
   return {
@@ -170,7 +173,11 @@ export async function getBooks() {
   const activeApiUrl = resolveApiUrl();
 
   const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
-  const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const isLocalhost = typeof window !== 'undefined' && (
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === '192.168.0.4'
+  );
 
   // Candidate order:
   let candidateUrls = [];
@@ -178,22 +185,22 @@ export async function getBooks() {
     // Production Vercel HTTPS environment - strictly use HTTPS configured domain
     candidateUrls = [activeApiUrl];
   } else if (isLocalhost) {
-    // In local development, probe local running instances first before slow/unreachable external LAN IPs
+    // In local development, probe local running instances first
     const localPorts = [
+      'http://localhost:8000',
+      'http://192.168.0.4:8000',
+      'http://127.0.0.1:8000',
       'http://localhost:5002',
       'http://localhost:5000',
-      'http://localhost:5001',
-      'http://localhost:8000',
-      'http://127.0.0.1:5002',
-      'http://127.0.0.1:5000'
+      'http://localhost:5001'
     ];
-    if (activeApiUrl.includes('localhost') || activeApiUrl.includes('127.0.0.1')) {
+    if (activeApiUrl.includes('localhost') || activeApiUrl.includes('127.0.0.1') || activeApiUrl.includes('192.168.0.4')) {
       candidateUrls = [activeApiUrl, ...localPorts];
     } else {
       candidateUrls = [...localPorts, activeApiUrl];
     }
   } else {
-    candidateUrls = [activeApiUrl, 'http://localhost:5002', 'http://localhost:5000'];
+    candidateUrls = [activeApiUrl, 'http://192.168.0.4:8000', 'http://localhost:8000'];
   }
 
   // Deduplicate
@@ -203,7 +210,7 @@ export async function getBooks() {
 
   for (const baseUrl of candidateUrls) {
     const candidateController = new AbortController();
-    // 2500ms timeout per host ensures quick fallback if a remote IP is unreachable
+    // 2500ms timeout per host ensures quick fallback
     const candidateTimer = setTimeout(() => {
       try { candidateController.abort(); } catch (e) {}
     }, 2500);
@@ -229,7 +236,6 @@ export async function getBooks() {
     } catch (err) {
       clearTimeout(candidateTimer);
       lastError = err;
-      // Do not fail entirely if one candidate times out; try next candidate
     }
   }
 
