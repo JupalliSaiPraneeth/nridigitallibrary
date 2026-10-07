@@ -658,15 +658,55 @@
 
     /* Navigation Bar */
     .header {
-      position: sticky;
+      position: fixed;
       top: 0;
+      left: 0;
+      width: 100%;
       z-index: 100;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border-light);
-      box-shadow: 0 1px 12px rgba(0, 0, 0, 0.03);
-      transition: all 0.3s ease;
+      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+    }
+
+    .header.transparent-header {
+      background: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border-bottom: 1px solid transparent !important;
+      box-shadow: none !important;
+    }
+
+    .header.scrolled-header {
+      background: var(--bg-glass) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      border-bottom: 1px solid var(--border-light) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    .header.transparent-header .nav-actions .btn-icon {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: var(--text-main);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    [data-theme="dark"] .header.transparent-header .nav-actions .btn-icon {
+      background: rgba(15, 20, 30, 0.72);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #f1f5f9;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+
+    .header.transparent-header .nav-actions .btn-icon:hover {
+      background: #ffffff;
+      border-color: var(--accent-orange);
+      color: var(--accent-orange);
+      transform: translateY(-2px);
+    }
+
+    [data-theme="dark"] .header.transparent-header .nav-actions .btn-icon:hover {
+      background: rgba(22, 28, 42, 0.95);
     }
 
     .header .nav-container {
@@ -1203,7 +1243,7 @@
     .nri-hero-section.full-bleed-hero {
       position: relative;
       width: 100%;
-      min-height: 420px;
+      min-height: 480px;
       margin: 0;
       padding: 0;
       background: var(--bg-secondary);
@@ -1270,16 +1310,17 @@
     .nri-hero-content-wrap {
       position: relative;
       z-index: 3;
-      padding: 54px 36px 44px 36px;
+      padding: 104px 36px 44px 36px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 420px;
+      min-height: 480px;
     }
 
     @media (max-width: 768px) {
       .nri-hero-content-wrap {
-        padding: 36px 20px 32px 20px;
+        padding: 88px 20px 32px 20px;
+        min-height: 420px;
       }
     }
 

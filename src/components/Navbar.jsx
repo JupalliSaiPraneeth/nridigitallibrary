@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLibrary } from '../context/LibraryContext.jsx';
 import {
   Bookmark,
@@ -22,6 +22,15 @@ export const Navbar = () => {
   } = useLibrary();
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 30);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const logoSrc = theme === 'dark' ? '/nridark-removebg-preview.png' : '/nrilogo.png';
 
@@ -41,7 +50,7 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="header top-navbar">
+    <header className={`header top-navbar ${scrolled ? 'scrolled-header' : 'transparent-header'}`}>
       <div id="progressBar" className="reading-progress-bar"></div>
 
       <div className="container nav-container">
@@ -62,7 +71,7 @@ export const Navbar = () => {
           </div>
         </a>
 
-        {/* Action Buttons (FAR RIGHT - Center links & notification bell removed as requested) */}
+        {/* Action Buttons (FAR RIGHT - Glassmorphic pills over the hero campus image) */}
         <div className="nav-actions">
           {/* Theme Toggle Button */}
           <button
