@@ -6,8 +6,15 @@ export function configureSecurityMiddleware(app) {
   // Helmet HTTP Security Headers
   app.use(helmet({
     contentSecurityPolicy: false, // Managed by NGINX or custom Policy
-    crossOriginResourcePolicy: { policy: "cross-origin" }
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    frameguard: false // Allow embedding in iframes (for PDF reader inside frontend portal)
   }));
+
+  // Ensure X-Frame-Options header is stripped to allow cross-origin framing
+  app.use((req, res, next) => {
+    res.removeHeader('X-Frame-Options');
+    next();
+  });
 
   // CORS Configuration
   const corsOptions = {

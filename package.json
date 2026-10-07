@@ -3,14 +3,26 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npx serve . -p ${PORT:-3000}",
-    "start": "npx serve . -p ${PORT:-3000}",
+    "start": "concurrently -n \"BACKEND,FRONTEND\" -c \"magenta.bold,cyan.bold\" \"npm run laptop-server\" \"npm run dev\"",
+    "dev": "vite --port 3000",
+    "dev:all": "concurrently -n \"BACKEND,FRONTEND\" -c \"magenta.bold,cyan.bold\" \"npm run laptop-server\" \"npm run dev\"",
+    "dev:py": "concurrently -n \"BACKEND,FRONTEND\" -c \"magenta.bold,cyan.bold\" \"npm run server\" \"npm run dev\"",
+    "build": "vite build",
+    "preview": "vite preview",
     "server": "python serve.py",
     "laptop-server": "node server.js"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
     "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "lucide-react": "^0.475.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "vite": "^5.4.14"
   }
 }

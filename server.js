@@ -59,6 +59,15 @@ const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 app.use(cors({ origin: ALLOWED_ORIGIN }));
 app.use(express.json());
 
+// Ensure X-Frame-Options is stripped to allow iframe embedding across ports
+app.use((req, res, next) => {
+  res.removeHeader('X-Frame-Options');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  next();
+});
+
 // Expose book files directly through /books
 app.use('/books', (req, res, next) => {
   const currentBooksDir = resolveBookFolder();
