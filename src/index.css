@@ -1243,7 +1243,7 @@
     .nri-hero-section.full-bleed-hero {
       position: relative;
       width: 100%;
-      min-height: 480px;
+      min-height: 520px;
       margin: 0;
       padding: 0;
       background: var(--bg-secondary);
@@ -1307,26 +1307,29 @@
     }
 
     /* Inner Container aligning content with page grid */
-    .nri-hero-content-wrap {
+    .full-bleed-hero .nri-hero-content-wrap {
       position: relative;
       z-index: 3;
-      padding: 104px 36px 44px 36px;
+      padding-top: 116px !important;
+      padding-bottom: 44px !important;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 480px;
+      min-height: 520px;
     }
 
     @media (max-width: 768px) {
-      .nri-hero-content-wrap {
-        padding: 88px 20px 32px 20px;
-        min-height: 420px;
+      .full-bleed-hero .nri-hero-content-wrap {
+        padding-top: 96px !important;
+        padding-bottom: 32px !important;
+        min-height: 440px;
       }
     }
 
     /* Text Content */
     .full-bleed-hero .nri-hero-text-content {
       max-width: 540px;
+      margin-top: 8px;
       margin-bottom: 32px;
     }
 
