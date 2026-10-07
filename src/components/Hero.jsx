@@ -39,6 +39,16 @@ export const Hero = () => {
 
   return (
     <section className="hero" id="hero">
+      {/* Campus Photo Backdrop on Right Side */}
+      <div className="hero-campus-backdrop" aria-hidden="true">
+        <img
+          src="/college.webp"
+          alt="DR. RVR NRI Institute of Technology Campus"
+          className="hero-campus-photo"
+        />
+        <div className="hero-campus-gradient-mask"></div>
+      </div>
+
       <div className="container hero-container">
         {/* Top Header Row: Heading on Left & Floating Stats Bar on Right */}
         <div className="hero-top-row">

@@ -1324,35 +1324,69 @@
       transform: translateY(-2px);
     }
 
-    /* Hero Section with College Campus Background Photo */
+    /* Hero Section */
     .hero {
       position: relative;
       background-color: var(--bg-main);
-      background-image: 
-        linear-gradient(90deg, 
-          #ffffff 0%, 
-          rgba(255, 255, 255, 0.98) 32%, 
-          rgba(255, 255, 255, 0.88) 52%, 
-          rgba(255, 255, 255, 0.42) 78%, 
-          rgba(255, 255, 255, 0.18) 100%),
-        url('/college.webp');
-      background-size: cover;
-      background-position: right center;
-      background-repeat: no-repeat;
       padding: 24px 0 16px 0;
       border-bottom: 1px solid var(--border-light);
       overflow: hidden;
     }
 
-    [data-theme='dark'] .hero {
-      background-image: 
-        linear-gradient(90deg, 
+    /* Dedicated Campus Photo Backdrop on Right (Shows Building & NRI Emblem) */
+    .hero-campus-backdrop {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 52%;
+      max-width: 780px;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .hero-campus-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 25%;
+      display: block;
+      filter: saturate(1.08) contrast(1.02);
+    }
+
+    .hero-campus-gradient-mask {
+      position: absolute;
+      inset: 0;
+      background: 
+        linear-gradient(to right, 
+          var(--bg-main) 0%, 
+          rgba(255, 255, 255, 0.82) 12%, 
+          rgba(255, 255, 255, 0.38) 32%, 
+          rgba(255, 255, 255, 0.05) 65%, 
+          transparent 100%),
+        linear-gradient(to top, 
+          var(--bg-main) 0%, 
+          transparent 20%),
+        linear-gradient(to bottom, 
+          var(--bg-main) 0%, 
+          transparent 15%);
+    }
+
+    [data-theme='dark'] .hero-campus-gradient-mask {
+      background: 
+        linear-gradient(to right, 
           #0b0f19 0%, 
-          rgba(11, 15, 25, 0.98) 32%, 
-          rgba(11, 15, 25, 0.88) 52%, 
-          rgba(11, 15, 25, 0.45) 78%, 
-          rgba(11, 15, 25, 0.20) 100%),
-        url('/college.webp');
+          rgba(11, 15, 25, 0.88) 12%, 
+          rgba(11, 15, 25, 0.45) 32%, 
+          rgba(11, 15, 25, 0.08) 65%, 
+          transparent 100%),
+        linear-gradient(to top, 
+          #0b0f19 0%, 
+          transparent 20%),
+        linear-gradient(to bottom, 
+          #0b0f19 0%, 
+          transparent 15%);
     }
 
     .hero-container {
@@ -1673,11 +1707,23 @@
         margin-top: 0;
         max-width: 100%;
       }
+
+      .hero-campus-backdrop {
+        width: 100%;
+        max-width: 100%;
+        opacity: 0.22;
+      }
     }
 
     @media (max-width: 767px) {
       .hero {
         padding: 16px 0 12px 0;
+      }
+
+      .hero-campus-backdrop {
+        width: 100%;
+        max-width: 100%;
+        opacity: 0.16;
       }
 
       .hero-container {
