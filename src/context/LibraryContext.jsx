@@ -151,7 +151,7 @@ export const LibraryProvider = ({ children }) => {
     showToast('Cleared your bookshelf', 'info');
   };
 
-  // Load Books from Backend / Fallback
+  // Load Books from Backend
   const fetchBooksData = async () => {
     setLoading(true);
     setError(null);
@@ -170,10 +170,14 @@ export const LibraryProvider = ({ children }) => {
           rating: b.rating || (Math.random() * 0.4 + 4.6).toFixed(1)
         };
       });
+
       setBooks(processed);
+      if (processed.length === 0) {
+        setError('No books are available');
+      }
     } catch (err) {
-      console.warn('API fetch error, setting empty catalog:', err);
-      setError('College book server storage is currently offline or unreachable.');
+      console.warn('API fetch error, no books available:', err);
+      setError('No books are available');
       setBooks([]);
     } finally {
       setLoading(false);

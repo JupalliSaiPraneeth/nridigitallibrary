@@ -5,6 +5,8 @@
 
 // Environment Variable: Configurable via Vite (.env) or window override
 export const resolveApiUrl = () => {
+  const DEFAULT_HTTPS_TUNNEL = "https://caution-science-sunshine-roll.trycloudflare.com";
+
   // 1. Highest priority: Build-time / runtime environment variable (Vercel Production or local .env)
   try {
     if (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_LIBRARY_API_URL) {
@@ -43,6 +45,11 @@ export const resolveApiUrl = () => {
     }
     if (hostname === "192.168.0.4") {
       return (port === "8000") ? window.location.origin : "http://192.168.0.4:8000";
+    }
+
+    // 5. On production Vercel/HTTPS, default to the live HTTPS Cloudflare tunnel
+    if (isVercel) {
+      return DEFAULT_HTTPS_TUNNEL;
     }
   }
 
@@ -179,19 +186,15 @@ export async function getBooks() {
     window.location.hostname === '192.168.0.4'
   );
 
-  const CLOUDFLARE_TUNNEL_FALLBACK = 'https://nova-university-lisa-assets.trycloudflare.com';
+  const CLOUDFLARE_TUNNEL_FALLBACK = 'https://caution-science-sunshine-roll.trycloudflare.com';
 
   // Candidate order:
   let candidateUrls = [];
   if (isHttps) {
     // Production Vercel HTTPS environment:
-    // Safari on macOS strictly blocks HTTP subresources from HTTPS pages (Mixed Content).
-    // Prioritize HTTPS endpoints so Safari on MacBook Neo loads books reliably.
-    if (activeApiUrl && activeApiUrl.startsWith('https://')) {
-      candidateUrls = [activeApiUrl, CLOUDFLARE_TUNNEL_FALLBACK];
-    } else {
-      candidateUrls = [CLOUDFLARE_TUNNEL_FALLBACK, activeApiUrl, 'http://192.168.0.4:8000'];
-    }
+    // Only probe secure HTTPS endpoints to prevent browser Mixed Content Blocking
+    const secureCandidates = [activeApiUrl, CLOUDFLARE_TUNNEL_FALLBACK].filter(u => u && u.startsWith('https://'));
+    candidateUrls = secureCandidates.length > 0 ? secureCandidates : [CLOUDFLARE_TUNNEL_FALLBACK];
   } else if (isLocalhost) {
     // In local development, probe local running instances first
     const localPorts = [

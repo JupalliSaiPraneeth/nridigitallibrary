@@ -83,7 +83,7 @@ export const BookCatalog = () => {
           </button>
         </div>
 
-        {error && (
+        {error && books && books.length > 0 && (
           <div style={{
             margin: '16px 0',
             padding: '12px 18px',
@@ -121,7 +121,7 @@ export const BookCatalog = () => {
             </h3>
             <p style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>
               {!books || books.length === 0
-                ? 'No digital books are currently available in the storage repository.'
+                ? 'No books are available in the library repository.'
                 : 'Try adjusting your search keywords or department filters.'}
             </p>
             {books && books.length > 0 ? (
