@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { getAllBooks, getBookFilePathById, scanBookStorage } from '../services/bookService.js';
+import { getAllBooks, getBookById, getBookFilePathById, scanBookStorage } from '../services/bookService.js';
 import { logger } from '../utils/logger.js';
 import { config } from '../config/index.js';
 
@@ -25,6 +25,39 @@ export function getBooksList(req, res) {
 }
 
 /**
+ * Returns detailed metadata for a single book.
+ */
+export function getBookDetails(req, res) {
+  const { id } = req.params;
+
+  try {
+    const book = getBookById(id);
+    if (!book) {
+      return res.status(404).json({
+        success: false,
+        error: 'Book not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      book: {
+        ...book,
+        url: `/api/books/${id}/file`,
+        file_url: `/api/books/${id}/file`,
+        download_url: `/api/books/${id}/download`
+      }
+    });
+  } catch (error) {
+    logger.error(`Failed to retrieve book details for ID ${id}`, error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch book details'
+    });
+  }
+}
+
+/**
  * Streams book file by secure ID (supports HTTP Range Requests).
  */
 export function streamBookFile(req, res) {
@@ -37,8 +70,9 @@ export function streamBookFile(req, res) {
     const ext = path.extname(filePath).toLowerCase();
 
     const contentType = ext === '.pdf' ? 'application/pdf' : 'application/epub+zip';
+    const safeFilename = path.basename(filePath);
 
-    logger.info(`Streaming book ID ${id} (${path.basename(filePath)}) on server ${config.serverId}`);
+    logger.info(`Streaming book ID ${id} (${safeFilename}) on server ${config.serverId}`);
 
     // Check for HTTP Range Header (for PDF seeking)
     const range = req.headers.range;
@@ -60,7 +94,7 @@ export function streamBookFile(req, res) {
         'Accept-Ranges': 'bytes',
         'Content-Length': chunksize,
         'Content-Type': contentType,
-        'Content-Disposition': 'inline',
+        'Content-Disposition': `inline; filename="${encodeURIComponent(safeFilename)}"`,
         'X-Server-ID': config.serverId
       });
 
@@ -69,7 +103,7 @@ export function streamBookFile(req, res) {
       res.writeHead(200, {
         'Content-Length': fileSize,
         'Content-Type': contentType,
-        'Content-Disposition': 'inline',
+        'Content-Disposition': `inline; filename="${encodeURIComponent(safeFilename)}"`,
         'Accept-Ranges': 'bytes',
         'X-Server-ID': config.serverId
       });
@@ -85,6 +119,42 @@ export function streamBookFile(req, res) {
       return res.status(403).json({ success: false, error: 'Access denied' });
     }
     return res.status(500).json({ success: false, error: 'Internal server error while streaming file' });
+  }
+}
+
+/**
+ * Downloads book file as attachment.
+ */
+export function downloadBookFile(req, res) {
+  const { id } = req.params;
+
+  try {
+    const filePath = getBookFilePathById(id);
+    const stat = fs.statSync(filePath);
+    const ext = path.extname(filePath).toLowerCase();
+    const contentType = ext === '.pdf' ? 'application/pdf' : 'application/epub+zip';
+    const fileName = path.basename(filePath);
+
+    logger.info(`Downloading book ID ${id} (${fileName}) on server ${config.serverId}`);
+
+    res.writeHead(200, {
+      'Content-Length': stat.size,
+      'Content-Type': contentType,
+      'Content-Disposition': `attachment; filename="${encodeURIComponent(fileName)}"`,
+      'Accept-Ranges': 'bytes',
+      'X-Server-ID': config.serverId
+    });
+
+    fs.createReadStream(filePath).pipe(res);
+  } catch (error) {
+    logger.warn(`Book download error for ID ${id}: ${error.message}`);
+    if (error.message.includes('not found')) {
+      return res.status(404).json({ success: false, error: 'Book file not found' });
+    }
+    if (error.message.includes('Access denied')) {
+      return res.status(403).json({ success: false, error: 'Access denied' });
+    }
+    return res.status(500).json({ success: false, error: 'Internal server error while downloading file' });
   }
 }
 

@@ -100,7 +100,9 @@ export function scanBookStorage() {
             fileType: ext.replace('.', ''),
             category: category.replace(/[/\\]/g, ' / '),
             size: fileSize,
-            url: `/api/books/${id}`
+            url: `/api/books/${id}/file`,
+            file_url: `/api/books/${id}/file`,
+            download_url: `/api/books/${id}/download`
           };
 
           bookCatalogCache.push(bookMeta);
@@ -123,6 +125,16 @@ export function getAllBooks() {
     scanBookStorage();
   }
   return bookCatalogCache;
+}
+
+/**
+ * Gets a single book by secure ID from catalog.
+ */
+export function getBookById(bookId) {
+  if (bookCatalogCache.length === 0) {
+    scanBookStorage();
+  }
+  return bookCatalogCache.find(b => b.id === bookId) || null;
 }
 
 /**
