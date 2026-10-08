@@ -36,7 +36,7 @@ export const Hero = () => {
       <div className="nri-hero-bg-layer">
         <div
           className="nri-hero-photo-right"
-          style={{ backgroundImage: "url('/college.png')" }}
+          style={{ backgroundImage: "url('/college.png?v=7')" }}
         >
           <div className="nri-hero-gradient-overlay"></div>
         </div>
@@ -52,7 +52,7 @@ export const Hero = () => {
           </h1>
 
           <p className="nri-hero-main-subtitle">
-            Access high-resolution digital textbooks, curriculum laboratory manuals,<br className="hide-mobile" />
+            Access high-resolution digital textbooks, curriculum laboratory manuals,
             research publications and peer-reviewed journals 24/7.
           </p>
         </div>
