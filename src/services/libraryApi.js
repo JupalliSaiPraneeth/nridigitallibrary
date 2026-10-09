@@ -43,8 +43,8 @@ export const resolveApiUrl = () => {
     if (hostname === "localhost" || hostname === "127.0.0.1") {
       return (port === "8000" || port === "5000" || port === "5002") ? window.location.origin : "http://localhost:8000";
     }
-    if (hostname === "192.168.0.4") {
-      return (port === "8000") ? window.location.origin : "http://192.168.0.4:8000";
+    if (hostname === "192.168.0.5") {
+      return (port === "8000") ? window.location.origin : "http://192.168.0.5:8000";
     }
 
     // 5. On production Vercel/HTTPS, default to the live HTTPS Cloudflare tunnel
@@ -183,7 +183,7 @@ export async function getBooks() {
   const isLocalhost = typeof window !== 'undefined' && (
     window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1' ||
-    window.location.hostname === '192.168.0.4'
+    window.location.hostname === '192.168.0.5'
   );
 
   const CLOUDFLARE_TUNNEL_FALLBACK = 'https://caution-science-sunshine-roll.trycloudflare.com';
@@ -199,19 +199,19 @@ export async function getBooks() {
     // In local development, probe local running instances first
     const localPorts = [
       'http://localhost:8000',
-      'http://192.168.0.4:8000',
+      'http://192.168.0.5:8000',
       'http://127.0.0.1:8000',
       'http://localhost:5002',
       'http://localhost:5000',
       'http://localhost:5001'
     ];
-    if (activeApiUrl.includes('localhost') || activeApiUrl.includes('127.0.0.1') || activeApiUrl.includes('192.168.0.4')) {
+    if (activeApiUrl.includes('localhost') || activeApiUrl.includes('127.0.0.1') || activeApiUrl.includes('192.168.0.5')) {
       candidateUrls = [activeApiUrl, ...localPorts];
     } else {
       candidateUrls = [...localPorts, activeApiUrl];
     }
   } else {
-    candidateUrls = [activeApiUrl, 'http://192.168.0.4:8000', 'http://localhost:8000'];
+    candidateUrls = [activeApiUrl, 'http://192.168.0.5:8000', 'http://localhost:8000'];
   }
 
   // Deduplicate
