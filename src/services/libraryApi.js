@@ -5,7 +5,7 @@
 
 // Environment Variable: Configurable via Vite (.env) or window override
 export const resolveApiUrl = () => {
-  const DEFAULT_HTTPS_TUNNEL = "https://caution-science-sunshine-roll.trycloudflare.com";
+  const DEFAULT_HTTPS_TUNNEL = "https://missing-circle-travelling-photos.trycloudflare.com";
 
   // 1. Highest priority: Build-time / runtime environment variable (Vercel Production or local .env)
   try {
@@ -186,7 +186,7 @@ export async function getBooks() {
     window.location.hostname === '192.168.0.5'
   );
 
-  const CLOUDFLARE_TUNNEL_FALLBACK = 'https://caution-science-sunshine-roll.trycloudflare.com';
+  const CLOUDFLARE_TUNNEL_FALLBACK = 'https://missing-circle-travelling-photos.trycloudflare.com';
 
   // Candidate order:
   let candidateUrls = [];
